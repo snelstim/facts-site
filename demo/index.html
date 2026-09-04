@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FACTS — Live Demo</title>
+<meta name="description" content="Interactive demo of the FACTS OEE dashboard (simulated data).">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTEyIiByeT0iMTEyIiBmaWxsPSIjMDA3NkMwIi8+CjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE0MC44NywzODkuMTIpIHNjYWxlKDAuMzg3MCwtMC4zODcwKSI+PHBhdGggZD0iTTYxIDBWNjg4SDUzNFY1MzdIMjY2VjM5Nkg0OTdWMjQ0SDI2NlYwWiIgZmlsbD0iI0ZGRkZGRiIvPjwvZz4KPC9zdmc+">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Saira:wght@600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+  /* ---------- theme tokens ---------- */
+  :root{
+    --bg:#F3F6F9; --surface:#FFFFFF; --surface-2:#EEF2F6;
+    --ink:#12151C; --ink-2:#3a4250; --muted:#6b7280; --line:#DCE2EA;
+    --accent:#0076C0; --accent-fg:#fff;
+    --side1:#062a54; --side2:#0a4f8f; --side-fg:#d7d7d7; --side-mut:#9fb3cc;
+    --good:#1f9d57; --warn:#ed6c02; --bad:#d32f2f;
+    --st-exec:#2e7d32; --st-setup:#0288d1; --st-starved:#ed6c02; --st-down:#d32f2f; --st-off:#616161;
+    --shadow:0 1px 2px rgba(18,21,28,.05),0 6px 18px rgba(18,21,28,.06);
+    --gauge-track:#e4e9f0;
+  }
+  :root[data-theme="dark"]{
+    --bg:#18212f; --surface:#1e2a3c; --surface-2:#243044;
+    --ink:#EDF0F4; --ink-2:#C4CBD6; --muted:#93a2ba; --line:#2c3b52;
+    --accent:#37a0dd; --accent-fg:#08131d;
+    --side1:#152741; --side2:#20406e; --side-fg:#c6d2e2; --side-mut:#7488a3;
+    --good:#37b06a; --warn:#f5901a; --bad:#e5675c;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.5);
+    --gauge-track:#2b3a52;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:Roboto,system-ui,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;display:flex;min-height:100%}
+  .saira{font-family:Saira,system-ui,sans-serif;letter-spacing:-.01em}
+
+  /* ---------- sidebar ---------- */
+  .side{width:230px;flex:0 0 230px;background:linear-gradient(180deg,var(--side1),var(--side2));
+    color:var(--side-fg);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+  .side .top{height:56px;background:rgba(0,0,0,.34);display:flex;align-items:center;padding:0 18px}
+  .side .wm{font-family:Saira;font-weight:800;font-size:1.5rem;color:#fff;letter-spacing:-.02em}
+  .side .wm .t{color:var(--accent)}
+  :root:not([data-theme="dark"]) .side .wm .t{color:#2E9BDD}
+  .side nav{padding:14px 10px;display:flex;flex-direction:column;gap:3px}
+  .side a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:7px;color:var(--side-fg);
+    text-decoration:none;font-size:.92rem;cursor:pointer}
+  .side a .ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;flex:0 0 18px}
+  .side a.active{background:rgba(255,255,255,.16);color:#fff}
+  .side a:hover:not(.active){background:rgba(255,255,255,.08)}
+  .side .sec{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--side-mut);padding:12px 14px 4px}
+  .side .foot{margin-top:auto;padding:14px}
+  .side .ver{font-family:"IBM Plex Mono",monospace;font-size:.62rem;color:var(--side-mut);padding:0 4px}
+
+  /* ---------- main ---------- */
+  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .wrap{max-width:1160px;width:100%;margin:0 auto;padding:26px 26px 60px}
+  .head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+  .head h1{font-family:Saira;font-weight:700;font-size:2rem;margin:0}
+  .head .cap{color:var(--muted);font-size:.9rem}
+  .badge{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+    background:var(--surface-2);color:var(--muted);border:1px solid var(--line);border-radius:20px;padding:4px 10px}
+  .spacer{flex:1}
+  .chip-range{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--accent);color:var(--accent);
+    border-radius:8px;padding:6px 11px;font-size:.8rem;font-weight:600;background:transparent;cursor:pointer}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{border:0;padding:7px 14px;font-size:.8rem;font-weight:600;font-family:Saira;cursor:pointer;
+    background:var(--surface);color:var(--muted)}
+  .seg button.on{background:var(--accent);color:var(--accent-fg)}
+
+  /* ---------- machine card (row) ---------- */
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+    cursor:pointer;overflow:hidden}
+  .rows .card{margin-bottom:14px}
+  .row{display:flex;align-items:center;gap:18px;padding:15px 18px 8px;flex-wrap:nowrap}
+  .glyph{width:132px;height:88px;border-radius:8px;flex:0 0 132px;background:var(--surface-2);
+    display:flex;align-items:center;justify-content:center;color:var(--muted)}
+  .glyph svg{width:52px;height:52px;fill:none;stroke:currentColor;stroke-width:1.4}
+  .idcol{flex:1 1 210px;min-width:0}
+  .mname{font-family:Saira;font-weight:700;font-size:1.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kind{color:var(--muted);font-size:.8rem;text-transform:capitalize;margin-top:1px}
+  .prog{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.82rem;margin-top:6px}
+  .prog svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6}
+  .metrics{flex:0 0 420px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  @media (max-width:820px){ .row{flex-wrap:wrap} .metrics{flex:1 1 100%} .glyph{flex-basis:120px;width:120px} }
+  .chev{color:var(--muted);flex:0 0 auto}
+  .chev svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2}
+
+  /* metric tile (number style, matches OverviewMetrics) */
+  .mt{border-radius:7px;padding:7px 9px;background:var(--surface-2)}
+  .mt.primary{background:color-mix(in srgb,var(--accent) 14%,transparent)}
+  .mt .v{font-family:Saira;font-weight:700;font-size:1.5rem;line-height:1;font-variant-numeric:tabular-nums}
+  .mt.primary .v{font-size:1.7rem}
+  .mt .l{font-family:"IBM Plex Mono",monospace;font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--muted);margin-top:5px}
+
+  /* grid layout */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+  .grid .card{padding:14px}
+  .grid .top-row{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .grid .mname{font-size:1.05rem;flex:1}
+  .grid .metrics2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .grid .glyph{width:100%;height:120px;flex:none;margin-bottom:10px}
+
+  /* state chip */
+  .state{font-family:"IBM Plex Mono",monospace;font-size:.6rem;font-weight:600;letter-spacing:.06em;
+    padding:3px 9px;border-radius:20px;color:#fff;white-space:nowrap}
+  .state.off{color:#fff}
+
+  /* gauges (detail) */
+  .gauges{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .g{display:flex;flex-direction:column;align-items:center;gap:6px}
+  .g .lab{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .g svg{display:block}
+  .g .arc{transition:stroke-dashoffset .9s cubic-bezier(.2,.7,.2,1),stroke .4s}
+  .g text{font-family:Saira;font-weight:700;fill:var(--ink)}
+
+  /* timeline */
+  .tl{margin-top:14px}
+  .tl .lb{font-family:"IBM Plex Mono",monospace;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--muted);margin-bottom:6px}
+  .tl .bar{display:flex;height:14px;border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+  .tl .bar i{height:100%;transition:width .9s ease}
+  .tl .axis{display:flex;justify-content:space-between;font-size:.62rem;color:var(--muted);margin-top:3px}
+  .tl .key{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font-size:.66rem;color:var(--muted)}
+  .tl .key i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:middle}
+
+  /* detail */
+  .back{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:.8rem;cursor:pointer;
+    font-family:"IBM Plex Mono",monospace;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+  .back svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2}
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);
+    padding:22px 24px;margin-top:16px}
+  .panel h3{font-family:Saira;font-weight:700;font-size:1.05rem;margin:0 0 14px}
+  .kv{width:100%;border-collapse:collapse;font-size:.9rem}
+  .kv td{padding:9px 4px;border-top:1px solid var(--line)}
+  .kv tr:first-child td{border-top:none}
+  .kv .r{text-align:right;font-variant-numeric:tabular-nums}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--good);display:inline-block;margin-right:6px}
+  .live{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+  .pulse{animation:pulse 2.2s ease-in-out infinite}
+  @keyframes pulse{50%{opacity:.35}}
+  .pv{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+  .pv .b{background:var(--surface-2);border-radius:7px;padding:9px 11px}
+  .pv .b .v{font-family:Saira;font-weight:700;font-size:1.3rem}
+  .pv .b .l{font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .themebtn{background:none;border:0;color:var(--side-fg);cursor:pointer}
+
+  @media (max-width:640px){ .side{position:fixed;z-index:20;transform:translateX(-100%);transition:.2s} .metrics{flex-basis:100%} }
+  @media (prefers-reduced-motion:reduce){ .g .arc,.tl .bar i{transition:none} .pulse{animation:none} }
+</style>
+</head>
+<body>
+  <aside class="side">
+    <div class="top"><span class="wm">FAC<span class="t">TS</span></span></div>
+    <nav>
+      <a class="active" data-nav="overview"><svg class="ic" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg> Home</a>
+      <a data-nav="dashboards"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Dashboards</a>
+      <div class="sec">Viewer</div>
+      <a><svg class="ic" viewBox="0 0 24 24"><path d="M15 3h4v18h-4M10 17l5-5-5-5M15 12H3"/></svg> Sign in</a>
+      <a id="themeToggle"><svg class="ic" viewBox="0 0 24 24" id="themeIcon"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg> <span id="themeLabel">Night mode</span></a>
+      <a><svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 5v14"/></svg> Help &amp; manuals</a>
+    </nav>
+    <div class="foot"><div class="ver">FACTS · v1.6.50-Beta · demo</div></div>
+  </aside>
+
+  <main class="main"><div class="wrap" id="view"></div></main>
+
+<script>
+"use strict";
+const RM = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+/* ---------- state colours ---------- */
+const STATE = {
+  EXECUTING:{c:'var(--st-exec)',label:'EXECUTING'},
+  SETUP:{c:'var(--st-setup)',label:'SETUP'},
+  STARVED:{c:'var(--st-starved)',label:'STARVED'},
+  DOWN:{c:'var(--st-down)',label:'DOWN'},
+  OFF:{c:'var(--st-off)',label:'OFF'},
+};
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+const gaugeColor=p=> p>=85?'var(--good)':p>=60?'var(--warn)':'var(--bad)';
+
+/* ---------- seed machines ---------- */
+function seedTimeline(mix){ // mix: array of [state, weightSecs]
+  return mix.map(([s,secs])=>({state:s,secs}));
+}
+const MACHINES = [
+  {id:'dyna',name:'Dyna-Press 8',kind:'pressbrake',program:'PRT-007412-01-Rev A',state:'EXECUTING',
+   a:.91,p:.82,q:.98,completed:184,total:250,good:181,bad:3,
+   tl:seedTimeline([['EXECUTING',3600],['SETUP',700],['DOWN',420],['EXECUTING',5200],['STARVED',300],['EXECUTING',2600]])},
+  {id:'puma',name:'Puma 6kW',kind:'laser',program:'NEST-20402',state:'EXECUTING',
+   a:.94,p:.92,q:null,completed:57,total:64,good:0,bad:0,
+   tl:seedTimeline([['EXECUTING',6400],['SETUP',480],['EXECUTING',4200],['STARVED',260],['EXECUTING',1900]])},
+  {id:'strip',name:'Strippit V-L',kind:'punching',program:'JOB-5567',state:'SETUP',
+   a:.77,p:.79,q:null,completed:22,total:120,good:0,bad:0,
+   tl:seedTimeline([['EXECUTING',2800],['DOWN',900],['SETUP',1400],['EXECUTING',3200],['SETUP',600]])},
+  {id:'mazak',name:'Mazak HCN',kind:'machining',program:'TH-6965-OP3',state:'EXECUTING',
+   a:.88,p:.86,q:.99,completed:311,total:400,good:308,bad:3,
+   tl:seedTimeline([['EXECUTING',5200],['SETUP',540],['EXECUTING',4800],['DOWN',360],['EXECUTING',3100]])},
+  {id:'nitro',name:'NitroCube',kind:'utility',program:null,state:'EXECUTING',uptime:.992,
+   process:[{l:'HP tank pressure',u:'bar',v:298},{l:'N2 flow',u:'m³/h',v:12.6},{l:'O₂ purity',u:'%',v:99.6},{l:'Process temp',u:'°C',v:23.4}],
+   alarms:[],
+   tl:seedTimeline([['EXECUTING',20000],['SETUP',400],['EXECUTING',9000]])},
+];
+const byId=id=>MACHINES.find(m=>m.id===id);
+const oee=m=> m.kind==='utility'?null : m.a*m.p*(m.q==null?1:m.q);
+
+/* ---------- app state ---------- */
+let layout = 'rows';
+let route = {view:'overview', id:null};
+const view = document.getElementById('view');
+
+/* ---------- theme ---------- */
+function applyTheme(t){
+  if(t==='dark') document.documentElement.setAttribute('data-theme','dark');
+  else document.documentElement.removeAttribute('data-theme');
+  document.getElementById('themeLabel').textContent = t==='dark'?'Day mode':'Night mode';
+  document.getElementById('themeIcon').innerHTML = t==='dark'
+    ? '<circle cx="12" cy="12" r="4.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>'
+    : '<path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/>';
+  try{localStorage.setItem('facts.demo.theme',t);}catch(e){}
+}
+let theme='light';
+try{ theme = localStorage.getItem('facts.demo.theme') || (window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'); }catch(e){}
+applyTheme(theme);
+document.getElementById('themeToggle').onclick=()=>{ theme=theme==='dark'?'light':'dark'; applyTheme(theme); };
+
+/* Shareable deep-links: ?theme=dark&layout=grid&m=<machineId> */
+const QS=new URLSearchParams(location.search);
+if(QS.get('theme')){ theme=QS.get('theme')==='dark'?'dark':'light'; applyTheme(theme); }
+if(QS.get('layout')==='grid') layout='grid';
+
+/* ---------- svg helpers ---------- */
+const R=22, C=2*Math.PI*R;
+function gaugeSVG(pct,big){
+  const size=big?70:58, r=big?26:22, c=2*Math.PI*r, off=c*(1-pct/100), fs=big?18:15;
+  const col=gaugeColor(pct);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--gauge-track)" stroke-width="${big?6:5}"/>
+    <circle class="arc" cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${col}" stroke-width="${big?6:5}"
+      stroke-linecap="round" transform="rotate(-90 ${size/2} ${size/2})"
+      stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/>
+    <text x="${size/2}" y="${size/2+fs*0.35}" text-anchor="middle" font-size="${fs}">${Math.round(pct)}</text>
+  </svg>`;
+}
+const GLYPH=`<svg viewBox="0 0 24 24"><path d="M6 20h12M8 20v-5m8 5v-8M7 15l4-4 3 2 4-6"/><circle cx="9" cy="7" r="1.4"/></svg>`;
+const DOCICON=`<svg viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6zM14 2v4h4"/></svg>`;
+
+function stateChip(s){ const st=STATE[s]; return `<span class="state" style="background:${st.c}">${st.label}</span>`; }
+
+function metricTile(label,val,primary){
+  const disp = val==null?'—':Math.round(val*100)+'';
+  return `<div class="mt ${primary?'primary':''}"><div class="v" style="color:${val==null?'var(--muted)':(primary?'var(--ink)':'var(--ink)')}">${disp}${val==null?'':'<span style="font-size:.55em;color:var(--muted)">%</span>'}</div><div class="l">${label}</div></div>`;
+}
+function timelineBar(tl){
+  const tot=tl.reduce((s,x)=>s+x.secs,0)||1;
+  const bars=tl.map(x=>`<i style="width:${(x.secs/tot*100).toFixed(2)}%;background:${STATE[x.state].c}"></i>`).join('');
+  const states=[...new Set(tl.map(x=>x.state))];
+  const key=states.map(s=>`<span><i style="background:${STATE[s].c}"></i>${STATE[s].label[0]+STATE[s].label.slice(1).toLowerCase()}</span>`).join('');
+  return {bars,key};
+}
+
+/* ---------- overview ---------- */
+function overviewMetrics(m,cols){
+  if(m.kind==='utility'){
+    const cells=[`<div class="mt primary"><div class="v">${Math.round(m.uptime*100)}<span style="font-size:.55em;color:var(--muted)">%</span></div><div class="l">Uptime</div></div>`];
+    m.process.slice(0,cols-1).forEach(p=>cells.push(`<div class="mt"><div class="v">${fmt(p.v)}</div><div class="l">${p.l}</div></div>`));
+    return cells.join('');
+  }
+  return metricTile('OEE',oee(m),true)+metricTile('Availability',m.a)+metricTile('Performance',m.p)+metricTile('Quality',m.q);
+}
+const fmt=v=> Math.abs(v)>=100||v===Math.round(v)?Math.round(v):v.toFixed(1);
+
+function renderOverview(){
+  const tiles = MACHINES.map(m=>{
+    const t=timelineBar(m.tl);
+    if(layout==='grid'){
+      return `<div class="card" data-open="${m.id}">
+        <div class="glyph">${GLYPH}</div>
+        <div class="top-row"><span class="mname saira" data-r="name-${m.id}">${m.name}</span>${stateChip(m.state)}</div>
+        <div class="prog">${DOCICON}<span>${m.program??'—'}</span></div>
+        <div class="metrics2" style="margin-top:10px" data-r="metrics-${m.id}">${overviewMetrics(m,2)}</div>
+        <div class="tl"><div class="bar" data-r="tl-${m.id}">${t.bars}</div></div>
+      </div>`;
+    }
+    return `<div class="card" data-open="${m.id}"><div class="row">
+      <div class="glyph">${GLYPH}</div>
+      <div class="idcol">
+        <div style="display:flex;align-items:center;gap:9px"><span class="mname saira">${m.name}</span>${stateChip(m.state)}</div>
+        <div class="kind">${m.kind}</div>
+        <div class="prog">${DOCICON}<span>${m.program??'—'}</span></div>
+      </div>
+      <div class="metrics" data-r="metrics-${m.id}">${overviewMetrics(m,4)}</div>
+      <div class="chev"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></div>
+    </div>
+    <div class="tl" style="padding:0 18px 14px"><div class="bar" data-r="tl-${m.id}">${t.bars}</div></div>
+    </div>`;
+  }).join('');
+  view.innerHTML = `
+    <div class="head">
+      <h1 class="saira">Overview</h1>
+      <span class="cap"><span class="dot pulse"></span>Live metrics over last 1 h</span>
+      <span class="badge">Demo · simulated data</span>
+      <span class="spacer"></span>
+      <button class="chip-range">▦ 1H ▾</button>
+      <span class="seg"><button data-lay="rows" class="${layout==='rows'?'on':''}">Rows</button><button data-lay="grid" class="${layout==='grid'?'on':''}">Grid</button></span>
+    </div>
+    <div class="${layout}">${tiles}</div>`;
+  view.querySelectorAll('[data-lay]').forEach(b=>b.onclick=e=>{e.stopPropagation();layout=b.dataset.lay;renderOverview();});
+  view.querySelectorAll('[data-open]').forEach(c=>c.onclick=()=>{route={view:'detail',id:c.dataset.open};renderDetail();});
+  setActiveNav('overview');
+}
+
+/* ---------- detail ---------- */
+function stateBreakdown(tl){
+  const tot=tl.reduce((s,x)=>s+x.secs,0)||1, agg={};
+  tl.forEach(x=>agg[x.state]=(agg[x.state]||0)+x.secs);
+  return Object.entries(agg).sort((a,b)=>b[1]-a[1]).map(([s,secs])=>
+    `<tr><td><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${STATE[s].c};margin-right:8px"></span>${STATE[s].label[0]+STATE[s].label.slice(1).toLowerCase()}</td>
+      <td class="r">${dur(secs)}</td><td class="r" style="color:var(--muted)">${(secs/tot*100).toFixed(0)}%</td></tr>`).join('');
+}
+const dur=s=> s>=3600?(s/3600).toFixed(1)+' h':s>=60?(s/60).toFixed(0)+' min':Math.round(s)+' s';
+
+function renderDetail(){
+  const m=byId(route.id); const t=timelineBar(m.tl);
+  let body;
+  if(m.kind==='utility'){
+    body=`<div class="panel"><h3>Process values</h3><div class="pv" data-r="pv">${m.process.map(p=>`<div class="b"><div class="v">${fmt(p.v)} <span style="font-size:.6em;color:var(--muted)">${p.u}</span></div><div class="l">${p.l}</div></div>`).join('')}</div></div>`;
+  } else {
+    body=`<div class="panel"><div class="gauges" data-r="gauges">
+        <div class="g">${gaugeSVG(oee(m)*100,true)}<span class="lab">OEE</span></div>
+        <div class="g">${gaugeSVG(m.a*100)}<span class="lab">Availability</span></div>
+        <div class="g">${gaugeSVG(m.p*100)}<span class="lab">Performance</span></div>
+        ${m.q==null?'<div class="g"><div style="width:58px;height:58px;display:flex;align-items:center;justify-content:center;font-family:Saira;font-size:1.4rem;color:var(--muted)">—</div><span class="lab">Quality</span></div>':`<div class="g">${gaugeSVG(m.q*100)}<span class="lab">Quality</span></div>`}
+      </div>
+      <table class="kv" style="margin-top:18px"><tbody>
+        <tr><td>Completed / total</td><td class="r"><b>${m.completed}</b> / ${m.total}</td></tr>
+        ${m.q!=null?`<tr><td>Good / bad</td><td class="r">${m.good} / ${m.bad}</td></tr>`:''}
+      </tbody></table></div>`;
+  }
+  view.innerHTML=`
+    <div class="back" id="back"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg> Overview</div>
+    <div class="head" style="margin-bottom:6px">
+      <h1 class="saira" style="font-size:2.2rem">${m.name}</h1>${stateChip(m.state)}
+      <span class="badge">Demo · simulated data</span>
+      <span class="spacer"></span><button class="chip-range">▦ 8H shift ▾</button>
+    </div>
+    <div class="prog" style="margin-bottom:4px">${m.program?DOCICON+'<span>Program: <b style="color:var(--ink)">'+m.program+'</b></span>':'<span class="kind" style="text-transform:capitalize">'+m.kind+'</span>'}</div>
+    ${body}
+    <div class="panel"><h3>Machine state · this shift</h3>
+      <div class="tl"><div class="bar" data-r="tl-d">${t.bars}</div>
+        <div class="key">${t.key}</div></div>
+    </div>
+    ${m.kind!=='utility'?`<div class="panel"><h3>Time by state</h3><table class="kv"><tbody data-r="brk">${stateBreakdown(m.tl)}</tbody></table></div>`:''}
+    <div class="panel"><h3>Recent alarms</h3>${
+      m.tl.some(x=>x.state==='DOWN')
+      ? `<table class="kv"><tbody><tr><td>Drive fault · code 4021</td><td class="r" style="color:var(--muted)">2 h ago · 6 min</td></tr><tr><td>Guard interlock · code 301</td><td class="r" style="color:var(--muted)">5 h ago · 1 min</td></tr></tbody></table>`
+      : `<div style="color:var(--muted);font-size:.9rem">No alarms in this shift.</div>`}
+    </div>`;
+  view.querySelector('#back').onclick=()=>{route={view:'overview'};renderOverview();};
+  setActiveNav('overview');
+}
+
+function setActiveNav(){ document.querySelectorAll('.side a[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav==='overview')); }
+
+/* ---------- live simulation ---------- */
+const NEXT={EXECUTING:['SETUP','STARVED','DOWN'],SETUP:['EXECUTING'],STARVED:['EXECUTING'],DOWN:['EXECUTING'],OFF:['EXECUTING']};
+function tickModel(){
+  MACHINES.forEach(m=>{
+    // drift A/P/Q
+    if(m.kind!=='utility'){
+      m.a=clamp(m.a+rnd(-.01,.012),.55,.99);
+      m.p=clamp(m.p+rnd(-.012,.012),.5,.99);
+      if(m.q!=null) m.q=clamp(m.q+rnd(-.004,.004),.9,1);
+      if(m.state==='EXECUTING' && Math.random()<.6){ m.completed=Math.min(m.total,m.completed+1); if(m.q!=null&&Math.random()<.96)m.good++; else if(m.q!=null)m.bad++; }
+    } else {
+      m.process.forEach(p=>{ const j=p.l.includes('purity')?.03:p.l.includes('temp')?.15:p.l.includes('flow')?.4:3; p.v=+(p.v+rnd(-j,j)).toFixed(p.l.includes('purity')?2:1); });
+      m.uptime=clamp(m.uptime+rnd(-.001,.0012),.95,1);
+    }
+    // state machine: small chance to transition
+    const last=m.tl[m.tl.length-1];
+    last.secs+=6;
+    if(Math.random()< (m.state==='EXECUTING'?.06:.16)){
+      const opts=NEXT[m.state]; const ns=opts[Math.floor(Math.random()*opts.length)];
+      m.state=ns; m.tl.push({state:ns,secs:6});
+      if(m.tl.length>14) m.tl.shift();
+    }
+  });
+}
+function updateLive(){
+  MACHINES.forEach(m=>{
+    // overview metrics + timeline + state chip (rebuild those small bits in place)
+    const met=view.querySelector(`[data-r="metrics-${m.id}"]`);
+    if(met) met.innerHTML = overviewMetrics(m, layout==='grid'?2:4);
+    const tl=view.querySelector(`[data-r="tl-${m.id}"]`);
+    if(tl){ const t=timelineBar(m.tl); tl.innerHTML=t.bars; }
+    // state chips carry no data-r; refresh via card scan
+  });
+  // refresh state chips + detail if open
+  if(route.view==='overview'){
+    view.querySelectorAll('[data-open]').forEach(card=>{
+      const m=byId(card.dataset.open); const chip=card.querySelector('.state');
+      if(chip){ chip.style.background=STATE[m.state].c; chip.textContent=STATE[m.state].label; }
+    });
+  } else if(route.view==='detail'){
+    const m=byId(route.id);
+    const g=view.querySelector('[data-r="gauges"]'); if(g&&m.kind!=='utility'){
+      g.innerHTML=`<div class="g">${gaugeSVG(oee(m)*100,true)}<span class="lab">OEE</span></div>
+        <div class="g">${gaugeSVG(m.a*100)}<span class="lab">Availability</span></div>
+        <div class="g">${gaugeSVG(m.p*100)}<span class="lab">Performance</span></div>
+        ${m.q==null?'<div class="g"><div style="width:58px;height:58px;display:flex;align-items:center;justify-content:center;font-family:Saira;font-size:1.4rem;color:var(--muted)">—</div><span class="lab">Quality</span></div>':`<div class="g">${gaugeSVG(m.q*100)}<span class="lab">Quality</span></div>`}`;
+    }
+    const tld=view.querySelector('[data-r="tl-d"]'); if(tld) tld.innerHTML=timelineBar(m.tl).bars;
+    const brk=view.querySelector('[data-r="brk"]'); if(brk) brk.innerHTML=stateBreakdown(m.tl);
+    const chip=view.querySelector('.head .state'); if(chip){chip.style.background=STATE[m.state].c;chip.textContent=STATE[m.state].label;}
+    const pv=view.querySelector('[data-r="pv"]'); if(pv&&m.kind==='utility') pv.innerHTML=m.process.map(p=>`<div class="b"><div class="v">${fmt(p.v)} <span style="font-size:.6em;color:var(--muted)">${p.u}</span></div><div class="l">${p.l}</div></div>`).join('');
+  }
+}
+
+const openM=QS.get('m');
+if(openM && byId(openM)){ route={view:'detail',id:openM}; renderDetail(); } else { renderOverview(); }
+if(!RM){ setInterval(()=>{ tickModel(); updateLive(); }, 2000); }
+</script>
+</body>
+</html>
