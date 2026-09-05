@@ -154,6 +154,44 @@
 
   @media (max-width:640px){ .side{position:fixed;z-index:20;transform:translateX(-100%);transition:.2s} .metrics{flex-basis:100%} }
   @media (prefers-reduced-motion:reduce){ .g .arc,.tl .bar i{transition:none} .pulse{animation:none} }
+
+  /* collapsible sidebar */
+  .side.collapsed{display:none}
+  .restore{position:fixed;top:12px;left:12px;z-index:60;width:38px;height:38px;border-radius:8px;
+    background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);cursor:pointer;
+    display:none;align-items:center;justify-content:center}
+  .restore.show{display:flex}
+  .restore svg{width:20px;height:20px;stroke:var(--ink);fill:none;stroke-width:2}
+
+  /* dashboard board */
+  .board{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .bcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
+    padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;cursor:pointer}
+  .bcard .bh{display:flex;align-items:center;gap:8px}
+  .bcard .bn{font-family:Saira;font-weight:700;font-size:1.25rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bcard .bg{display:flex;flex-direction:column;align-items:center}
+  .bcard .bg .gl{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+  .bcard .bapq{display:flex;justify-content:space-around;text-align:center}
+  .bcard .bapq .v{font-family:Saira;font-weight:700;font-size:1.15rem}
+  .bcard .bapq .l{font-family:"IBM Plex Mono",monospace;font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .bcard .arc{transition:stroke-dashoffset .9s cubic-bezier(.2,.7,.2,1),stroke .4s}
+
+  /* kiosk mode */
+  .kbar{display:none;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--line);
+    border-radius:12px;padding:12px 18px;margin-bottom:16px}
+  .kbar .kw{font-family:Saira;font-weight:800;font-size:1.45rem;color:var(--ink)}
+  .kbar .kw .t{color:var(--accent)}
+  .kbar .kt{font-family:Saira;font-weight:700;font-size:1.1rem;color:var(--ink-2)}
+  .kbar .kclock{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:1.05rem;color:var(--ink)}
+  .kbar .kx{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:7px 13px;cursor:pointer;
+    font-family:Saira;font-weight:600;color:var(--ink)}
+  .kioskbtn{display:inline-flex;align-items:center;gap:7px;background:var(--accent);color:var(--accent-fg);
+    border:none;border-radius:8px;padding:8px 15px;font-family:Saira;font-weight:600;font-size:.92rem;cursor:pointer}
+  body.kiosk .side,body.kiosk .restore{display:none!important}
+  body.kiosk .wrap{max-width:none;padding:16px 18px}
+  body.kiosk .kbar{display:flex}
+  body.kiosk .board{grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
+  body.kiosk .bcard{cursor:default}
 </style>
 </head>
 <body>
@@ -173,6 +211,7 @@
   </aside>
 
   <main class="main"><div class="wrap" id="view"></div></main>
+  <button id="restore" class="restore" title="Show menu"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 
 <script>
 "use strict";
@@ -385,7 +424,52 @@ function renderDetail(){
   setActiveNav('overview');
 }
 
-function setActiveNav(){ document.querySelectorAll('.side a[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav==='overview')); }
+function setActiveNav(key){ document.querySelectorAll('.side a[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===key)); }
+
+/* ---------- dashboard / kiosk ---------- */
+let kiosk=false;
+function dashGauge(pct){
+  const s=118,r=48,c=2*Math.PI*r,off=c*(1-pct/100),col=gaugeColor(pct);
+  return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><circle cx="59" cy="59" r="${r}" fill="none" stroke="var(--gauge-track)" stroke-width="9"/><circle class="arc" cx="59" cy="59" r="${r}" fill="none" stroke="${col}" stroke-width="9" stroke-linecap="round" transform="rotate(-90 59 59)" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/><text x="59" y="68" text-anchor="middle" font-size="30" font-family="Saira" font-weight="700" fill="var(--ink)">${Math.round(pct)}</text></svg>`;
+}
+function dashApq(m){
+  if(m.kind==='utility') return m.process.slice(0,3).map(p=>`<div><div class="v">${fmt(p.v)}</div><div class="l">${p.l}</div></div>`).join('');
+  return `<div><div class="v">${Math.round(m.a*100)}%</div><div class="l">Avail</div></div>
+    <div><div class="v">${Math.round(m.p*100)}%</div><div class="l">Perf</div></div>
+    <div><div class="v">${m.q==null?'—':Math.round(m.q*100)+'%'}</div><div class="l">Qual</div></div>`;
+}
+function renderDashboard(){
+  const cards=MACHINES.map(m=>{
+    const isU=m.kind==='utility';
+    return `<div class="bcard" data-open="${m.id}">
+      <div class="bh"><span class="bn saira">${m.name}</span>${stateChip(m.state)}</div>
+      <div class="bg"><div data-r="dg-${m.id}">${dashGauge((isU?m.uptime:oee(m))*100)}</div><div class="gl">${isU?'Uptime':'OEE'}</div></div>
+      <div class="bapq" data-r="apq-${m.id}">${dashApq(m)}</div>
+      <div class="tl"><div class="bar" data-r="tld-${m.id}">${timelineBar(m.tl).bars}</div></div>
+    </div>`;
+  }).join('');
+  view.innerHTML=`
+    <div class="kbar"><span class="kw">FAC<span class="t">TS</span></span><span class="kt">Plant Overview</span>
+      <span class="kclock" id="kclock"></span><button class="kx" id="kexit">Exit kiosk</button></div>
+    ${kiosk?'':`<div class="head"><h1 class="saira">Plant Overview</h1>
+      <span class="cap"><span class="dot pulse"></span>Live · all machines</span>
+      <span class="badge">Demo · simulated data</span><span class="spacer"></span>
+      <button class="kioskbtn" id="kenter">▣ Kiosk mode</button></div>`}
+    <div class="board">${cards}</div>`;
+  view.querySelectorAll('.board [data-open]').forEach(c=>c.onclick=()=>{ if(kiosk) return; route={view:'detail',id:c.dataset.open}; renderDetail(); });
+  const ke=document.getElementById('kenter'); if(ke) ke.onclick=enterKiosk;
+  const kx=document.getElementById('kexit'); if(kx) kx.onclick=exitKiosk;
+  tickClock();
+  setActiveNav(kiosk?'':'dashboards');
+}
+function enterKiosk(){ kiosk=true; document.body.classList.add('kiosk'); route={view:'dashboard'}; renderDashboard();
+  if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{}); }
+function exitKiosk(){ kiosk=false; document.body.classList.remove('kiosk'); renderDashboard();
+  if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{}); }
+document.addEventListener('fullscreenchange',()=>{ if(!document.fullscreenElement && kiosk){ kiosk=false; document.body.classList.remove('kiosk'); if(route.view==='dashboard') renderDashboard(); } });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && kiosk) exitKiosk(); });
+function tickClock(){ const el=document.getElementById('kclock'); if(el) el.textContent=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
+setInterval(tickClock,1000);
 
 /* ---------- live simulation ---------- */
 const NEXT={EXECUTING:['SETUP','STARVED','DOWN'],SETUP:['EXECUTING'],STARVED:['EXECUTING'],DOWN:['EXECUTING'],OFF:['EXECUTING']};
@@ -438,11 +522,30 @@ function updateLive(){
     const brk=view.querySelector('[data-r="brk"]'); if(brk) brk.innerHTML=stateBreakdown(m.tl);
     const chip=view.querySelector('.head .state'); if(chip){chip.style.background=STATE[m.state].c;chip.textContent=STATE[m.state].label;}
     const pv=view.querySelector('[data-r="pv"]'); if(pv&&m.kind==='utility') pv.innerHTML=m.process.map(p=>`<div class="b"><div class="v">${fmt(p.v)} <span style="font-size:.6em;color:var(--muted)">${p.u}</span></div><div class="l">${p.l}</div></div>`).join('');
+  } else if(route.view==='dashboard'){
+    MACHINES.forEach(m=>{
+      const isU=m.kind==='utility';
+      const dg=view.querySelector(`[data-r="dg-${m.id}"]`); if(dg) dg.innerHTML=dashGauge((isU?m.uptime:oee(m))*100);
+      const apq=view.querySelector(`[data-r="apq-${m.id}"]`); if(apq) apq.innerHTML=dashApq(m);
+      const tld=view.querySelector(`[data-r="tld-${m.id}"]`); if(tld) tld.innerHTML=timelineBar(m.tl).bars;
+    });
+    view.querySelectorAll('.board [data-open]').forEach(c=>{ const m=byId(c.dataset.open); const chip=c.querySelector('.state'); if(chip){chip.style.background=STATE[m.state].c;chip.textContent=STATE[m.state].label;} });
   }
 }
 
+// nav routing
+document.querySelector('.side a[data-nav="overview"]').onclick=()=>{ route={view:'overview'}; renderOverview(); };
+document.querySelector('.side a[data-nav="dashboards"]').onclick=()=>{ route={view:'dashboard'}; renderDashboard(); };
+// collapsible sidebar
+const sideEl=document.querySelector('.side'), restoreEl=document.getElementById('restore');
+document.querySelector('.side .hide').onclick=()=>{ sideEl.classList.add('collapsed'); restoreEl.classList.add('show'); };
+restoreEl.onclick=()=>{ sideEl.classList.remove('collapsed'); restoreEl.classList.remove('show'); };
+
 const openM=QS.get('m');
-if(openM && byId(openM)){ route={view:'detail',id:openM}; renderDetail(); } else { renderOverview(); }
+if(QS.get('kiosk')==='1'){ kiosk=true; document.body.classList.add('kiosk'); route={view:'dashboard'}; renderDashboard(); }
+else if(QS.get('view')==='dashboard'){ route={view:'dashboard'}; renderDashboard(); }
+else if(openM && byId(openM)){ route={view:'detail',id:openM}; renderDetail(); }
+else { renderOverview(); }
 if(!RM){ setInterval(()=>{ tickModel(); updateLive(); }, 2000); }
 </script>
 </body>
