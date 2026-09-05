@@ -163,35 +163,33 @@
   .restore.show{display:flex}
   .restore svg{width:20px;height:20px;stroke:var(--ink);fill:none;stroke-width:2}
 
-  /* dashboard board */
-  .board{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-  .bcard{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);
-    padding:18px 18px 16px;display:flex;flex-direction:column;gap:12px;cursor:pointer}
-  .bcard .bh{display:flex;align-items:center;gap:8px}
-  .bcard .bn{font-family:Saira;font-weight:700;font-size:1.25rem;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .bcard .bg{display:flex;flex-direction:column;align-items:center}
-  .bcard .bg .gl{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:2px}
-  .bcard .bapq{display:flex;justify-content:space-around;text-align:center}
-  .bcard .bapq .v{font-family:Saira;font-weight:700;font-size:1.15rem}
-  .bcard .bapq .l{font-family:"IBM Plex Mono",monospace;font-size:.56rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-  .bcard .arc{transition:stroke-dashoffset .9s cubic-bezier(.2,.7,.2,1),stroke .4s}
+  /* widget dashboard — matches the app's Gridstack board */
+  .wboard{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;grid-auto-rows:minmax(148px,auto)}
+  .wc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 15px;
+    display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .wc .wt{font-size:.78rem;color:var(--muted);margin-bottom:6px;flex:0 0 auto}
+  .wc .wbody{flex:1;min-height:0;display:flex}
+  .c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
+  @media(max-width:900px){.c3{grid-column:span 6}.c4,.c5,.c7,.c8{grid-column:span 12}}
+  .gl{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .arc{transition:stroke-dashoffset .9s cubic-bezier(.2,.7,.2,1),stroke .4s}
+  .wbar{display:flex;flex:1;min-height:22px;border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+  .wbar i{height:100%}
+  .kpi{text-align:center}.kpi .v{font-family:Saira;font-weight:700;font-size:2.1rem;line-height:1}
+  .heat{display:grid;grid-template-columns:52px repeat(24,1fr);gap:2px;align-items:center;font-size:.58rem;width:100%}
+  .heat .hd{text-align:center;color:var(--muted)} .heat .rl{color:var(--muted)}
+  .heat .cell{border-radius:3px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:#e6ecf4;font-size:.55rem}
 
-  /* kiosk mode */
-  .kbar{display:none;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--line);
-    border-radius:12px;padding:12px 18px;margin-bottom:16px}
-  .kbar .kw{font-family:Saira;font-weight:800;font-size:1.45rem;color:var(--ink)}
-  .kbar .kw .t{color:var(--accent)}
-  .kbar .kt{font-family:Saira;font-weight:700;font-size:1.1rem;color:var(--ink-2)}
-  .kbar .kclock{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:1.05rem;color:var(--ink)}
-  .kbar .kx{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:7px 13px;cursor:pointer;
-    font-family:Saira;font-weight:600;color:var(--ink)}
+  /* kiosk mode — edge-to-edge board, no chrome (like the app) */
+  .kexit{position:fixed;top:12px;right:12px;z-index:60;display:none;background:rgba(0,0,0,.5);color:#fff;
+    border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:8px 14px;cursor:pointer;
+    font-family:Saira;font-weight:600;backdrop-filter:blur(4px)}
   .kioskbtn{display:inline-flex;align-items:center;gap:7px;background:var(--accent);color:var(--accent-fg);
     border:none;border-radius:8px;padding:8px 15px;font-family:Saira;font-weight:600;font-size:.92rem;cursor:pointer}
   body.kiosk .side,body.kiosk .restore{display:none!important}
-  body.kiosk .wrap{max-width:none;padding:16px 18px}
-  body.kiosk .kbar{display:flex}
-  body.kiosk .board{grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
-  body.kiosk .bcard{cursor:default}
+  body.kiosk .kexit{display:block}
+  body.kiosk .wrap{max-width:none;padding:12px;height:100vh;overflow:hidden;display:flex}
+  body.kiosk .wboard{flex:1;height:100%;grid-auto-rows:auto;grid-template-rows:1.35fr 1fr 0.78fr 1.35fr}
 </style>
 </head>
 <body>
@@ -212,6 +210,7 @@
 
   <main class="main"><div class="wrap" id="view"></div></main>
   <button id="restore" class="restore" title="Show menu"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  <button id="kexit" class="kexit">✕ Exit kiosk</button>
 
 <script>
 "use strict";
@@ -426,50 +425,59 @@ function renderDetail(){
 
 function setActiveNav(key){ document.querySelectorAll('.side a[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===key)); }
 
-/* ---------- dashboard / kiosk ---------- */
-let kiosk=false;
-function dashGauge(pct){
-  const s=118,r=48,c=2*Math.PI*r,off=c*(1-pct/100),col=gaugeColor(pct);
-  return `<svg width="${s}" height="${s}" viewBox="0 0 ${s} ${s}"><circle cx="59" cy="59" r="${r}" fill="none" stroke="var(--gauge-track)" stroke-width="9"/><circle class="arc" cx="59" cy="59" r="${r}" fill="none" stroke="${col}" stroke-width="9" stroke-linecap="round" transform="rotate(-90 59 59)" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/><text x="59" y="68" text-anchor="middle" font-size="30" font-family="Saira" font-weight="700" fill="var(--ink)">${Math.round(pct)}</text></svg>`;
-}
-function dashApq(m){
-  if(m.kind==='utility') return m.process.slice(0,3).map(p=>`<div><div class="v">${fmt(p.v)}</div><div class="l">${p.l}</div></div>`).join('');
-  return `<div><div class="v">${Math.round(m.a*100)}%</div><div class="l">Avail</div></div>
-    <div><div class="v">${Math.round(m.p*100)}%</div><div class="l">Perf</div></div>
-    <div><div class="v">${m.q==null?'—':Math.round(m.q*100)+'%'}</div><div class="l">Qual</div></div>`;
-}
+/* ---------- widget dashboard / kiosk (matches the app's Gridstack board) ---------- */
+let kiosk=false, dashM='ppeb';
+function wGauge(pct){ const s=132,r=55,c=2*Math.PI*r,off=c*(1-pct/100),col=gaugeColor(pct);
+  return `<svg viewBox="0 0 ${s} ${s}" style="width:auto;height:100%;max-height:180px;max-width:100%"><circle cx="66" cy="66" r="${r}" fill="none" stroke="var(--gauge-track)" stroke-width="10"/><circle class="arc" cx="66" cy="66" r="${r}" fill="none" stroke="${col}" stroke-width="10" stroke-linecap="round" transform="rotate(-90 66 66)" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/><text x="66" y="78" text-anchor="middle" font-size="36" font-family="Saira" font-weight="700" fill="var(--ink)">${Math.round(pct)}</text></svg>`; }
+function wc(cls,title,body,style){ return `<div class="wc ${cls}"><div class="wt">${title}</div><div class="wbody" style="${style||''}">${body}</div></div>`; }
+function gaugeBody(title,pct){ return `<div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0" data-r="g-${title}">${wGauge(pct)}</div><div class="gl" style="text-align:center;margin-top:2px">${title}</div>`; }
+
+// sample data for the app-style widgets: dense state band + status-by-hour heatmap
+const DENSE=(()=>{ const o=[]; for(let i=0;i<95;i++){ const r=Math.random(); const st=r<0.74?'EXECUTING':r<0.85?'SETUP':r<0.93?'STARVED':r<0.98?'DOWN':'EXECUTING'; o.push({state:st,secs:st==='EXECUTING'?50+Math.random()*130:8+Math.random()*34}); } return o; })();
+const DTOT=DENSE.reduce((s,x)=>s+x.secs,0);
+const HEAT={active:[0,0,0,0,0,0,0,47,95,68,78,80,78,79,0,0,0,0,0,0,0,0,0,0],
+  idle:[100,100,100,100,100,100,100,53,5,32,20,17,16,17,0,0,0,0,0,0,0,0,0,0],
+  alert:[0,0,0,0,0,0,0,0,0,0,3,3,6,4,0,0,0,0,0,0,0,0,0,0]};
+const hcol={ active:v=>v?`hsl(130 46% ${12+v*0.34}%)`:'var(--surface-2)',
+  idle:v=>v?`hsl(28 58% ${14+v*0.22}%)`:'var(--surface-2)',
+  alert:v=>v?`hsl(0 55% ${16+v*4}%)`:'var(--surface-2)' };
+function heatRow(label,vals,f){ return `<div class="rl">${label}</div>`+vals.map(v=>`<div class="cell" style="background:${f(v)}">${v||''}</div>`).join(''); }
+const fmtT=d=>d.toTimeString().slice(0,5);
+
 function renderDashboard(){
-  const cards=MACHINES.map(m=>{
-    const isU=m.kind==='utility';
-    return `<div class="bcard" data-open="${m.id}">
-      <div class="bh"><span class="bn saira">${m.name}</span>${stateChip(m.state)}</div>
-      <div class="bg"><div data-r="dg-${m.id}">${dashGauge((isU?m.uptime:oee(m))*100)}</div><div class="gl">${isU?'Uptime':'OEE'}</div></div>
-      <div class="bapq" data-r="apq-${m.id}">${dashApq(m)}</div>
-      <div class="tl"><div class="bar" data-r="tld-${m.id}">${timelineBar(m.tl).bars}</div></div>
-    </div>`;
-  }).join('');
-  view.innerHTML=`
-    <div class="kbar"><span class="kw">FAC<span class="t">TS</span></span><span class="kt">Plant Overview</span>
-      <span class="kclock" id="kclock"></span><button class="kx" id="kexit">Exit kiosk</button></div>
-    ${kiosk?'':`<div class="head"><h1 class="saira">Plant Overview</h1>
-      <span class="cap"><span class="dot pulse"></span>Live · all machines</span>
-      <span class="badge">Demo · simulated data</span><span class="spacer"></span>
-      <button class="kioskbtn" id="kenter">▣ Kiosk mode</button></div>`}
-    <div class="board">${cards}</div>`;
-  view.querySelectorAll('.board [data-open]').forEach(c=>c.onclick=()=>{ if(kiosk) return; route={view:'detail',id:c.dataset.open}; renderDetail(); });
+  const m=byId(dashM);
+  const startT=fmtT(new Date(Date.now()-54*60000)), endT=fmtT(new Date());
+  const bars=DENSE.map(s=>`<i style="width:${(s.secs/DTOT*100).toFixed(2)}%;background:${STATE[s.state].c}"></i>`).join('');
+  const legend=['EXECUTING','SETUP','DOWN','STARVED'].map(s=>`<span style="display:inline-flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:2px;background:${STATE[s].c};display:inline-block"></span>${s[0]+s.slice(1).toLowerCase()}</span>`).join('');
+  const kpis=[['Parts',270],['Good',252],['Bad',18],['Bends',4937],['Programs',14]].map(([l,v])=>`<div class="kpi"><div class="v">${v}</div><div class="gl">${l}</div></div>`).join('');
+  const heat=`<div class="heat"><div></div>${[...Array(24).keys()].map(h=>`<div class="hd">${h}</div>`).join('')}${heatRow('Active',HEAT.active,hcol.active)}${heatRow('Idle',HEAT.idle,hcol.idle)}${heatRow('Alert',HEAT.alert,hcol.alert)}</div>`;
+  const faults=`<div style="flex:1;display:flex;gap:8px;min-height:0">
+      <div style="display:flex;flex-direction:column;justify-content:space-between;font-size:.58rem;color:var(--muted);padding:3px 0">${[20,15,10,5,0].map(n=>`<span>${n}</span>`).join('')}</div>
+      <svg viewBox="0 0 300 100" preserveAspectRatio="none" style="flex:1;height:100%"><line x1="0" y1="97" x2="300" y2="97" stroke="var(--line)"/><polyline points="0,96 300,96" fill="none" stroke="var(--good)" stroke-width="2"/></svg>
+    </div><div style="text-align:center;font-size:.72rem;color:var(--muted);margin-top:6px">PCSS_ERR 402A : Pedal 1 NO and NC OFF.</div>`;
+  const board =
+    wc('c3','OEE',gaugeBody('OEE',oee(m)*100),'flex-direction:column') +
+    wc('c3','Availability',gaugeBody('Availability',m.a*100),'flex-direction:column') +
+    wc('c3','Performance',gaugeBody('Performance',m.p*100),'flex-direction:column') +
+    wc('c3','Quality',gaugeBody('Quality',(m.q==null?1:m.q)*100),'flex-direction:column') +
+    wc('c4','Active part',`<div style="margin:auto;text-align:center"><div class="saira" style="font-size:1.9rem;color:var(--ink-2)">${m.program}</div><div class="gl" style="margin-top:8px">Active part</div></div>`,'align-items:center;justify-content:center') +
+    wc('c8','Production',`<div style="display:flex;gap:18px;flex-wrap:wrap;width:100%;justify-content:space-around;align-items:center">${kpis}</div>`,'align-items:center') +
+    wc('c12','State',`<div class="wbar">${bars}</div><div style="display:flex;justify-content:space-between;font-size:.62rem;color:var(--muted);margin-top:4px"><span>${startT}</span><span>${endT}</span></div><div style="display:flex;gap:14px;margin-top:6px;font-size:.66rem;color:var(--muted)">${legend}</div>`,'flex-direction:column') +
+    wc('c5','Faults',faults,'flex-direction:column') +
+    wc('c7','Status by hour',heat,'flex-direction:column;overflow:auto');
+  view.innerHTML = `
+    ${kiosk?'':`<div class="head"><h1 class="saira">${m.name}</h1><span class="cap">Pressbrake · standard dashboard</span><span class="badge">Demo · simulated data</span><span class="spacer"></span><button class="kioskbtn" id="kenter">▣ Kiosk mode</button></div>`}
+    <div class="wboard">${board}</div>`;
   const ke=document.getElementById('kenter'); if(ke) ke.onclick=enterKiosk;
-  const kx=document.getElementById('kexit'); if(kx) kx.onclick=exitKiosk;
-  tickClock();
   setActiveNav(kiosk?'':'dashboards');
 }
 function enterKiosk(){ kiosk=true; document.body.classList.add('kiosk'); route={view:'dashboard'}; renderDashboard();
   if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{}); }
 function exitKiosk(){ kiosk=false; document.body.classList.remove('kiosk'); renderDashboard();
   if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{}); }
+document.getElementById('kexit').onclick=exitKiosk;
 document.addEventListener('fullscreenchange',()=>{ if(!document.fullscreenElement && kiosk){ kiosk=false; document.body.classList.remove('kiosk'); if(route.view==='dashboard') renderDashboard(); } });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape' && kiosk) exitKiosk(); });
-function tickClock(){ const el=document.getElementById('kclock'); if(el) el.textContent=new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}); }
-setInterval(tickClock,1000);
 
 /* ---------- live simulation ---------- */
 const NEXT={EXECUTING:['SETUP','STARVED','DOWN'],SETUP:['EXECUTING'],STARVED:['EXECUTING'],DOWN:['EXECUTING'],OFF:['EXECUTING']};
@@ -523,13 +531,10 @@ function updateLive(){
     const chip=view.querySelector('.head .state'); if(chip){chip.style.background=STATE[m.state].c;chip.textContent=STATE[m.state].label;}
     const pv=view.querySelector('[data-r="pv"]'); if(pv&&m.kind==='utility') pv.innerHTML=m.process.map(p=>`<div class="b"><div class="v">${fmt(p.v)} <span style="font-size:.6em;color:var(--muted)">${p.u}</span></div><div class="l">${p.l}</div></div>`).join('');
   } else if(route.view==='dashboard'){
-    MACHINES.forEach(m=>{
-      const isU=m.kind==='utility';
-      const dg=view.querySelector(`[data-r="dg-${m.id}"]`); if(dg) dg.innerHTML=dashGauge((isU?m.uptime:oee(m))*100);
-      const apq=view.querySelector(`[data-r="apq-${m.id}"]`); if(apq) apq.innerHTML=dashApq(m);
-      const tld=view.querySelector(`[data-r="tld-${m.id}"]`); if(tld) tld.innerHTML=timelineBar(m.tl).bars;
+    const m=byId(dashM);
+    [['OEE',oee(m)*100],['Availability',m.a*100],['Performance',m.p*100],['Quality',(m.q==null?1:m.q)*100]].forEach(([t,pct])=>{
+      const el=view.querySelector(`[data-r="g-${t}"]`); if(el) el.innerHTML=wGauge(pct);
     });
-    view.querySelectorAll('.board [data-open]').forEach(c=>{ const m=byId(c.dataset.open); const chip=c.querySelector('.state'); if(chip){chip.style.background=STATE[m.state].c;chip.textContent=STATE[m.state].label;} });
   }
 }
 
