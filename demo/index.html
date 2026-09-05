@@ -33,7 +33,7 @@
   *{box-sizing:border-box}
   html,body{margin:0;height:100%}
   body{background:var(--bg);color:var(--ink);font-family:Roboto,system-ui,Arial,sans-serif;
-    -webkit-font-smoothing:antialiased;display:flex;min-height:100%}
+    -webkit-font-smoothing:antialiased;display:flex;height:100vh;overflow:hidden}
   .saira{font-family:Saira,system-ui,sans-serif;letter-spacing:-.01em}
 
   /* ---------- sidebar ---------- */
@@ -56,7 +56,9 @@
   .side .ver{font-family:"IBM Plex Mono",monospace;font-size:.62rem;color:var(--side-mut);padding:0 4px}
 
   /* ---------- main ---------- */
-  .main{flex:1;min-width:0;display:flex;flex-direction:column}
+  .main{flex:1;min-width:0;display:flex;flex-direction:column;height:100vh;overflow-y:auto}
+  .side nav.bottom{margin-top:auto}
+  .side nav.bottom .ver{margin-top:10px}
   .wrap{max-width:1160px;width:100%;margin:0 auto;padding:26px 26px 60px}
   .head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px}
   .head h1{font-family:Saira;font-weight:700;font-size:2rem;margin:0}
@@ -160,12 +162,14 @@
     <nav>
       <a class="active" data-nav="overview"><svg class="ic" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg> Home</a>
       <a data-nav="dashboards"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Dashboards</a>
+    </nav>
+    <nav class="bottom">
       <div class="sec">Viewer</div>
       <a><svg class="ic" viewBox="0 0 24 24"><path d="M15 3h4v18h-4M10 17l5-5-5-5M15 12H3"/></svg> Sign in</a>
       <a id="themeToggle"><svg class="ic" viewBox="0 0 24 24" id="themeIcon"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg> <span id="themeLabel">Night mode</span></a>
       <a><svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 5v14"/></svg> Help &amp; manuals</a>
+      <div class="ver">FACTS · v1.6.50-Beta · demo</div>
     </nav>
-    <div class="foot"><div class="ver">FACTS · v1.6.50-Beta · demo</div></div>
   </aside>
 
   <main class="main"><div class="wrap" id="view"></div></main>
@@ -210,6 +214,15 @@ const MACHINES = [
 ];
 const byId=id=>MACHINES.find(m=>m.id===id);
 const oee=m=> m.kind==='utility'?null : m.a*m.p*(m.q==null?1:m.q);
+
+// Sample "programs completed this shift" [name, parts, finished-ago] for the detail view.
+const PROG = {
+  ppeb:[['PRT-007420-01',250,'8 min'],['PRT-007411-02',180,'52 min'],['PRT-007398-01',90,'1.5 h'],['PRT-007377-03',140,'3 h']],
+  puma:[['20408',64,'11 min'],['20404',120,'1.1 h'],['20399',48,'2.4 h']],
+  strippit:[['JOB-774',120,'6 min'],['JOB-771',60,'48 min'],['JOB-768',200,'2 h']],
+  hcn:[['TH-6965-OP3',400,'14 min'],['TH-6961-OP1',250,'1.3 h'],['TH-6958-OP2',180,'2.2 h'],['TH-6944-OP1',60,'3.1 h'],['TH-6939-OP3',120,'4 h']],
+};
+MACHINES.forEach(m=>{ m.programs=(PROG[m.id]||[]).map(([n,p,a])=>({n,p,a})); });
 
 /* ---------- app state ---------- */
 let layout = 'rows';
@@ -359,6 +372,10 @@ function renderDetail(){
         <div class="key">${t.key}</div></div>
     </div>
     ${m.kind!=='utility'?`<div class="panel"><h3>Time by state</h3><table class="kv"><tbody data-r="brk">${stateBreakdown(m.tl)}</tbody></table></div>`:''}
+    ${m.kind!=='utility' && m.programs.length ? `<div class="panel"><h3>Programs completed · this shift</h3>
+      <div class="saira" style="font-weight:700;font-size:1.7rem;margin-bottom:12px">${m.programs.length}
+        <span style="font-size:.5em;color:var(--muted);font-family:Roboto;font-weight:400">programs · ${m.programs.reduce((s,p)=>s+p.p,0)} parts</span></div>
+      <table class="kv"><tbody>${m.programs.map(p=>`<tr><td>${p.n}</td><td class="r">${p.p} parts</td><td class="r" style="color:var(--muted)">${p.a} ago</td></tr>`).join('')}</tbody></table></div>` : ''}
     <div class="panel"><h3>Recent alarms</h3>${
       m.tl.some(x=>x.state==='DOWN')
       ? `<table class="kv"><tbody><tr><td>Drive fault · code 4021</td><td class="r" style="color:var(--muted)">2 h ago · 6 min</td></tr><tr><td>Guard interlock · code 301</td><td class="r" style="color:var(--muted)">5 h ago · 1 min</td></tr></tbody></table>`
