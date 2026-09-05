@@ -37,9 +37,10 @@
   .saira{font-family:Saira,system-ui,sans-serif;letter-spacing:-.01em}
 
   /* ---------- sidebar ---------- */
-  .side{width:230px;flex:0 0 230px;background:linear-gradient(180deg,var(--side1),var(--side2));
+  .side{width:250px;flex:0 0 250px;background:linear-gradient(180deg,var(--side1),var(--side2));
     color:var(--side-fg);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
-  .side .top{height:56px;background:rgba(0,0,0,.34);display:flex;align-items:center;padding:0 18px}
+  .side .top{height:56px;background:rgba(0,0,0,.4);display:flex;align-items:center;padding:0 18px}
+  .side .top .hide{margin-left:auto;width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.4;opacity:.85;cursor:pointer}
   .side .wm{font-family:Saira;font-weight:800;font-size:1.5rem;color:#fff;letter-spacing:-.02em}
   .side .wm .t{color:var(--accent)}
   :root:not([data-theme="dark"]) .side .wm .t{color:#2E9BDD}
@@ -47,7 +48,7 @@
   .side a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:7px;color:var(--side-fg);
     text-decoration:none;font-size:.92rem;cursor:pointer}
   .side a .ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;flex:0 0 18px}
-  .side a.active{background:rgba(255,255,255,.16);color:#fff}
+  .side a.active{background:rgba(255,255,255,.22);color:#fff}
   .side a:hover:not(.active){background:rgba(255,255,255,.08)}
   .side .sec{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;
     color:var(--side-mut);padding:12px 14px 4px}
@@ -75,21 +76,22 @@
     cursor:pointer;overflow:hidden}
   .rows .card{margin-bottom:14px}
   .row{display:flex;align-items:center;gap:18px;padding:15px 18px 8px;flex-wrap:nowrap}
-  .glyph{width:132px;height:88px;border-radius:8px;flex:0 0 132px;background:var(--surface-2);
+  .glyph{width:150px;height:96px;border-radius:8px;flex:0 0 150px;background:transparent;
     display:flex;align-items:center;justify-content:center;color:var(--muted)}
-  .glyph svg{width:52px;height:52px;fill:none;stroke:currentColor;stroke-width:1.4}
+  .mimg{width:100%;height:100%;object-fit:contain;display:block}
   .idcol{flex:1 1 210px;min-width:0}
   .mname{font-family:Saira;font-weight:700;font-size:1.15rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .kind{color:var(--muted);font-size:.8rem;text-transform:capitalize;margin-top:1px}
   .prog{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:.82rem;margin-top:6px}
   .prog svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6}
-  .metrics{flex:0 0 420px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .metrics{flex:0 1 420px;min-width:0;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
   @media (max-width:820px){ .row{flex-wrap:wrap} .metrics{flex:1 1 100%} .glyph{flex-basis:120px;width:120px} }
   .chev{color:var(--muted);flex:0 0 auto}
   .chev svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2}
 
   /* metric tile (number style, matches OverviewMetrics) */
-  .mt{border-radius:7px;padding:7px 9px;background:var(--surface-2)}
+  .mt{border-radius:7px;padding:7px 9px;background:var(--surface-2);min-width:0}
+  .idcol .mname{min-width:0}
   .mt.primary{background:color-mix(in srgb,var(--accent) 14%,transparent)}
   .mt .v{font-family:Saira;font-weight:700;font-size:1.5rem;line-height:1;font-variant-numeric:tabular-nums}
   .mt.primary .v{font-size:1.7rem}
@@ -154,7 +156,7 @@
 </head>
 <body>
   <aside class="side">
-    <div class="top"><span class="wm">FAC<span class="t">TS</span></span></div>
+    <div class="top"><span class="wm">FAC<span class="t">TS</span></span><svg class="hide" viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></div>
     <nav>
       <a class="active" data-nav="overview"><svg class="ic" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg> Home</a>
       <a data-nav="dashboards"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Dashboards</a>
@@ -189,19 +191,19 @@ function seedTimeline(mix){ // mix: array of [state, weightSecs]
   return mix.map(([s,secs])=>({state:s,secs}));
 }
 const MACHINES = [
-  {id:'dyna',name:'Dyna-Press 8',kind:'pressbrake',program:'PRT-007412-01-Rev A',state:'EXECUTING',
+  {id:'ppeb',name:'PPEB 220/30',kind:'pressbrake',img:'img/ppeb.png',program:'PRT-007420-01-Rev A',state:'EXECUTING',
    a:.91,p:.82,q:.98,completed:184,total:250,good:181,bad:3,
    tl:seedTimeline([['EXECUTING',3600],['SETUP',700],['DOWN',420],['EXECUTING',5200],['STARVED',300],['EXECUTING',2600]])},
-  {id:'puma',name:'Puma 6kW',kind:'laser',program:'NEST-20402',state:'EXECUTING',
+  {id:'puma',name:'Puma 6kW',kind:'laser',img:'img/puma.png',program:'20408',state:'EXECUTING',
    a:.94,p:.92,q:null,completed:57,total:64,good:0,bad:0,
    tl:seedTimeline([['EXECUTING',6400],['SETUP',480],['EXECUTING',4200],['STARVED',260],['EXECUTING',1900]])},
-  {id:'strip',name:'Strippit V-L',kind:'punching',program:'JOB-5567',state:'SETUP',
+  {id:'strippit',name:'Strippit PX-1530',kind:'punching',img:'img/strippit.png',program:'JOB-774',state:'SETUP',
    a:.77,p:.79,q:null,completed:22,total:120,good:0,bad:0,
    tl:seedTimeline([['EXECUTING',2800],['DOWN',900],['SETUP',1400],['EXECUTING',3200],['SETUP',600]])},
-  {id:'mazak',name:'Mazak HCN',kind:'machining',program:'TH-6965-OP3',state:'EXECUTING',
+  {id:'hcn',name:'HCN-5000',kind:'machining',img:'img/hcn.png',program:'TH-6965-OP3',state:'EXECUTING',
    a:.88,p:.86,q:.99,completed:311,total:400,good:308,bad:3,
    tl:seedTimeline([['EXECUTING',5200],['SETUP',540],['EXECUTING',4800],['DOWN',360],['EXECUTING',3100]])},
-  {id:'nitro',name:'NitroCube',kind:'utility',program:null,state:'EXECUTING',uptime:.992,
+  {id:'nitro',name:'NitroCube',kind:'utility',img:'img/nitrocube.png',program:null,state:'EXECUTING',uptime:.992,
    process:[{l:'HP tank pressure',u:'bar',v:298},{l:'N2 flow',u:'m³/h',v:12.6},{l:'O₂ purity',u:'%',v:99.6},{l:'Process temp',u:'°C',v:23.4}],
    alarms:[],
    tl:seedTimeline([['EXECUTING',20000],['SETUP',400],['EXECUTING',9000]])},
@@ -280,7 +282,7 @@ function renderOverview(){
     const t=timelineBar(m.tl);
     if(layout==='grid'){
       return `<div class="card" data-open="${m.id}">
-        <div class="glyph">${GLYPH}</div>
+        <div class="glyph"><img class="mimg" src="${m.img}" alt="${m.name}"></div>
         <div class="top-row"><span class="mname saira" data-r="name-${m.id}">${m.name}</span>${stateChip(m.state)}</div>
         <div class="prog">${DOCICON}<span>${m.program??'—'}</span></div>
         <div class="metrics2" style="margin-top:10px" data-r="metrics-${m.id}">${overviewMetrics(m,2)}</div>
@@ -288,7 +290,7 @@ function renderOverview(){
       </div>`;
     }
     return `<div class="card" data-open="${m.id}"><div class="row">
-      <div class="glyph">${GLYPH}</div>
+      <div class="glyph"><img class="mimg" src="${m.img}" alt="${m.name}"></div>
       <div class="idcol">
         <div style="display:flex;align-items:center;gap:9px"><span class="mname saira">${m.name}</span>${stateChip(m.state)}</div>
         <div class="kind">${m.kind}</div>
@@ -345,6 +347,7 @@ function renderDetail(){
   view.innerHTML=`
     <div class="back" id="back"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg> Overview</div>
     <div class="head" style="margin-bottom:6px">
+      <img class="mimg" src="${m.img}" alt="${m.name}" style="width:120px;height:76px;flex:0 0 120px">
       <h1 class="saira" style="font-size:2.2rem">${m.name}</h1>${stateChip(m.state)}
       <span class="badge">Demo · simulated data</span>
       <span class="spacer"></span><button class="chip-range">▦ 8H shift ▾</button>
