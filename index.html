@@ -200,6 +200,41 @@
   .chat .you{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
   .chat .bot{align-self:flex-start;background:#1a2538;color:#d6e0ee;border:1px solid #2a374b;border-bottom-left-radius:4px}
   .chat .bot b{color:#fff}
+
+  /* automations: rule + email mock */
+  .auto-grid{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start;margin-top:44px}
+  @media(max-width:860px){.auto-grid{grid-template-columns:1fr}}
+  .rule{background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+  .rule .rh{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .rule .rh b{font-family:"Saira",sans-serif;font-weight:700;font-size:1.02rem}
+  .rule .rh .on{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--good);display:flex;align-items:center;gap:6px}
+  .rule .rh .on i{width:7px;height:7px;border-radius:50%;background:var(--good);display:inline-block}
+  .rule .rr{display:flex;gap:16px;padding:13px 18px;border-top:1px solid var(--line);align-items:baseline}
+  .rule .rh+.rr{border-top:none}
+  .rule .rk{font-family:"IBM Plex Mono",monospace;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--blue);min-width:62px}
+  .rule .rv{display:flex;flex-direction:column;gap:6px;font-size:.93rem}
+  .rule .rv .sub{color:var(--steel);font-size:.82rem}
+  .rule .rv .no{font-family:"IBM Plex Mono",monospace;font-size:.64rem;color:#fff;background:var(--steel);
+    border-radius:4px;padding:1px 6px;margin-right:6px}
+  .mail{background:#fff;color:#222;border:1px solid #d5dbe4;border-radius:12px;box-shadow:var(--shadow);overflow:hidden;
+    font-family:"Segoe UI",Roboto,Arial,sans-serif}
+  .mail .mh{background:#f4f6f9;border-bottom:1px solid #e1e6ee;padding:11px 18px;font-size:.78rem;color:#667}
+  .mail .mh .sj{display:block;color:#222;font-weight:600;font-size:.9rem;margin-top:2px}
+  .mail .mb{padding:18px;font-size:.88rem;line-height:1.5}
+  .mail .hl{border-left:4px solid #c62828;padding:5px 12px;margin-bottom:12px;font-size:1rem}
+  .mail .hl.ok{border-color:#2e7d32}
+  .mail table{border-collapse:collapse}
+  .mail td{padding:2px 14px 2px 0}.mail td:first-child{color:#666}
+  .mail p.t{margin:13px 0 4px}
+  .mail ul{margin:0;padding-left:18px}
+  .mail a{color:#0076c0}
+  .mail .ft{color:#888;font-size:.74rem;margin-top:16px}
+  .mail.small{margin-top:14px}
+  .mail.small .mb{padding:13px 18px}
+  .ill{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);
+    margin:12px 2px 0}
 </style>
 
 <!-- ===================== HERO ===================== -->
@@ -209,6 +244,7 @@
     <span class="links">
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
+      <a href="#automations">Automations</a>
       <a href="#ai">AI assistant</a>
       <a href="#appliance">Deployment</a>
       <a href="#demo" class="cta">Book a demo</a>
@@ -355,6 +391,68 @@
         <h4>Email automations</h4><p>Simple rules: triggers, conditions, an email. Alert the right person when a machine stops or a value drifts, and send a note when it recovers.</p></div>
       <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 11h5M18.5 8.5v5"/></svg></span>
         <h4>Users &amp; roles</h4><p>Named accounts with site manager, operations manager and admin roles, and security you can tune per role. One login works at every site.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== AUTOMATIONS ===================== -->
+<section class="band" id="automations">
+  <div class="wrap center">
+    <span class="eyebrow">Email automations</span>
+    <h2>Know the moment it matters. Not before.</h2>
+    <p class="lede">Build a rule in one screen: what should start it, what must also be true, and who to tell. FACTS emails the
+      right person with the live readings, then tells them when it clears.</p>
+  </div>
+  <div class="wrap">
+    <div class="auto-grid">
+      <div>
+        <div class="rule" aria-label="Example automation (illustrative)">
+          <div class="rh"><b>Booster stopped at full tank</b><span class="on"><i></i>On</span></div>
+          <div class="rr"><span class="rk">When</span><span class="rv">
+            <span>NitroCube &middot; Booster status = Stopped</span>
+            <span class="sub">Starts when it becomes true, not while it stays true</span></span></div>
+          <div class="rr"><span class="rk">Only if</span><span class="rv">
+            <span>NitroCube &middot; HP tank pressure &ge; 100 bar</span>
+            <span><span class="no">NOT</span>Sun 00:00&ndash;08:00</span></span></div>
+          <div class="rr"><span class="rk">Then</span><span class="rv">
+            <span>Email service@yourcompany.com</span>
+            <span class="sub">At most every 30 min &middot; send a note when it is resolved</span></span></div>
+        </div>
+        <p class="ill">Illustrative rule</p>
+        <div class="feats" style="grid-template-columns:1fr 1fr;margin-top:22px;gap:14px">
+          <div class="feat"><h4>Any signal, any machine</h4><p>Compare a value with a number, a text or another live signal such as a setpoint.</p></div>
+          <div class="feat"><h4>Time-aware</h4><p>Quiet on Sunday mornings, loud on a night shift. Days and hours are conditions.</p></div>
+          <div class="feat"><h4>Spots silence</h4><p>Alert when a machine becomes unreachable, so a dead connection is not mistaken for a calm shift.</p></div>
+          <div class="feat"><h4>Never lost</h4><p>Mail waits in a queue and retries when the server is unreachable, for up to a day.</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="mail" aria-label="Example alert email (illustrative)">
+          <div class="mh">To: service@yourcompany.com<span class="sj">[FACTS] Auckland - NitroCube: Booster stopped at full tank</span></div>
+          <div class="mb">
+            <div class="hl"><b>Triggered: NitroCube &middot; Booster status = Stopped</b></div>
+            <table>
+              <tr><td>Rule</td><td>Booster stopped at full tank</td></tr>
+              <tr><td>Time</td><td>Sat 03 Oct 2026 14:12:08</td></tr>
+              <tr><td>Site</td><td>Auckland</td></tr>
+            </table>
+            <p class="t"><b>Current values</b></p>
+            <table>
+              <tr><td>NitroCube &middot; Booster status</td><td>Stopped</td></tr>
+              <tr><td>NitroCube &middot; HP tank pressure</td><td>118 bar</td></tr>
+            </table>
+            <p class="t"><b>Conditions (all met)</b></p>
+            <ul><li>NitroCube &middot; HP tank pressure &ge; 100 bar</li><li>NOT Sun 00:00&ndash;08:00</li></ul>
+            <p class="t"><a href="#automations" onclick="return false">Open NitroCube in FACTS</a></p>
+            <div class="ft">Sent by FACTS. Change or switch off this alert under Automations.</div>
+          </div>
+        </div>
+        <div class="mail small">
+          <div class="mh">To: service@yourcompany.com<span class="sj">[FACTS] [Resolved] Auckland - NitroCube: Booster stopped at full tank</span></div>
+          <div class="mb"><div class="hl ok" style="margin-bottom:0"><b>Resolved after 23 min.</b></div></div>
+        </div>
+        <p class="ill">Illustrative emails</p>
+      </div>
     </div>
   </div>
 </section>
