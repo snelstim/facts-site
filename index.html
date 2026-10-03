@@ -210,7 +210,7 @@
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
       <a href="#ai">AI assistant</a>
-      <a href="#appliance">The appliance</a>
+      <a href="#appliance">Deployment</a>
       <a href="#demo" class="cta">Book a demo</a>
     </span>
   </nav>
@@ -296,7 +296,7 @@
         <div class="d">Availability × Performance × Quality, integrated from real state transitions — not a daily average.</div></div>
       <div class="stat"><div class="n">0</div><div class="t">Config files</div>
         <div class="d">Add a machine by browsing its address space and clicking the signals. A form, not a <code>.conf</code>.</div></div>
-      <div class="stat"><div class="n">1</div><div class="t">Self-contained box</div>
+      <div class="stat"><div class="n">1</div><div class="t">Self-contained app</div>
         <div class="d">One app owns config, polling, storage and the dashboard. No Grafana, no Docker, no second database.</div></div>
     </div>
   </div>
@@ -333,7 +333,7 @@
 <section class="band" id="features">
   <div class="wrap center">
     <span class="eyebrow">What's inside</span>
-    <h2>Everything on one box. Nothing phones home.</h2>
+    <h2>Everything in one app. Nothing phones home.</h2>
   </div>
   <div class="wrap">
     <div class="feats">
@@ -344,11 +344,11 @@
       <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 19V5M20 19H4M8 15l4-5 3 3 4-6"/></svg></span>
         <h4>Live dashboards &amp; kiosks</h4><p>OEE gauges, state timelines, downtime Pareto. Build custom views, rotate them on a wall display.</p></div>
       <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 3v18M5 8l7-5 7 5M5 16l7 5 7-5"/></svg></span>
-        <h4>Offline-first appliance</h4><p>Runs on a slim PC or Raspberry Pi 5 on the plant network. No internet required, ever.</p></div>
+        <h4>Runs on your server</h4><p>Installs as a Windows service on a server you already run, on the plant network. No internet required, ever.</p></div>
       <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/></svg></span>
         <h4>SQL Server &amp; ERP API</h4><p>Forwards to your existing SQL Server; a read-only REST API feeds OEE straight into your ERP.</p></div>
       <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
-        <h4>Signed OTA updates</h4><p>Upload a signed package; the box verifies, applies and auto-rolls-back if the new build isn't healthy.</p></div>
+        <h4>Signed updates</h4><p>Upload a signed package; FACTS verifies it, applies it and rolls back automatically if the new build isn't healthy.</p></div>
       <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M12 7.5v4M12 11.5l-6 4.5M12 11.5l6 4.5"/></svg></span>
         <h4>Multi-site fleet</h4><p>Run several plants and see every machine on one page. Each site keeps working alone; summaries land in a shared SQL Server on your own network. No cloud.</p></div>
       <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
@@ -392,23 +392,23 @@
   <div class="wrap">
     <div class="appl-grid">
       <div>
-        <span class="eyebrow">The appliance</span>
-        <h2>A quiet box on the wall. That's the whole install.</h2>
-        <p class="lede">Sized for storage endurance and dirty factory power, not spec-sheet horsepower. Plug it in,
-          give it a name, add your machines — it starts collecting on boot and keeps a durable record on-site.</p>
+        <span class="eyebrow">Deployment</span>
+        <h2>Runs on the server you already have. One installer.</h2>
+        <p class="lede">No new hardware to buy, ship or mount. Run the installer on a Windows server on the plant network, give the
+          site a name and add your machines &mdash; FACTS starts collecting at once and keeps a durable record.</p>
         <ul class="spec">
-          <li><span class="k">Hardware</span><span class="v">Fanless industrial mini-PC (Intel N100) or Raspberry Pi 5</span></li>
-          <li><span class="k">Power</span><span class="v">Wide-voltage DC · clean shutdown on power loss · watchdog</span></li>
-          <li><span class="k">Network</span><span class="v">Plant LAN only · <span style="font-family:'IBM Plex Mono'">gwb-oee.local</span> · self-signed HTTPS</span></li>
-          <li><span class="k">Storage</span><span class="v">Local buffer + roll-up · years of OEE in 10&nbsp;GB</span></li>
-          <li><span class="k">Access</span><span class="v">Open viewing · named users · site manager · operations manager · admin · GWB technician</span></li>
+          <li><span class="k">Install</span><span class="v">A guided installer sets up a Windows service and opens the firewall ports for you</span></li>
+          <li><span class="k">Network</span><span class="v">Plant LAN only &middot; open viewing for wall displays &middot; HTTPS for sign-in</span></li>
+          <li><span class="k">Storage</span><span class="v">Local buffer, forwarded to your existing SQL Server in its own database &middot; years of OEE in 10&nbsp;GB</span></li>
+          <li><span class="k">Updates</span><span class="v">Signed packages with automatic rollback &middot; no internet needed</span></li>
+          <li><span class="k">Access</span><span class="v">Open viewing &middot; named users &middot; site manager &middot; operations manager &middot; admin &middot; GWB technician</span></li>
         </ul>
       </div>
       <div class="device">
         <div class="din"><span class="wm">FAC<span class="t">T</span><span class="t">S</span></span></div>
         <div class="row">
-          <span class="p">DIN-RAIL</span><span class="p">~10 W</span><span class="p">NO CLOUD</span>
-          <span class="p">A/B UPDATES</span><span class="p">RTC + UPS</span>
+          <span class="p">WINDOWS SERVICE</span><span class="p">NO CLOUD</span><span class="p">SQL FORWARDING</span>
+          <span class="p">A/B UPDATES</span><span class="p">SIGNED PACKAGES</span>
         </div>
       </div>
     </div>
