@@ -187,6 +187,19 @@
     font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.03em}
   footer .wm{font-size:1.15rem;color:#fff}
   footer .sp{margin-left:auto}
+
+  /* ai chat mock */
+  .chat{background:linear-gradient(160deg,#0f1c30,#0e1116);border:1px solid var(--hero-line);border-radius:16px;
+    padding:20px;color:#EDF0F4;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+  .chat .cbar{display:flex;align-items:center;gap:9px;font-family:"Saira",sans-serif;font-weight:700;font-size:.98rem;
+    padding-bottom:12px;border-bottom:1px solid var(--hero-line)}
+  .chat .cbar .dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 9px var(--good)}
+  .chat .cbar .ill{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.14em;
+    text-transform:uppercase;color:#7f93ad;font-weight:400}
+  .chat .msg{font-size:.9rem;line-height:1.5;padding:11px 14px;border-radius:12px;max-width:92%}
+  .chat .you{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+  .chat .bot{align-self:flex-start;background:#1a2538;color:#d6e0ee;border:1px solid #2a374b;border-bottom-left-radius:4px}
+  .chat .bot b{color:#fff}
 </style>
 
 <!-- ===================== HERO ===================== -->
@@ -196,6 +209,7 @@
     <span class="links">
       <a href="#how">How it works</a>
       <a href="#features">Features</a>
+      <a href="#ai">AI assistant</a>
       <a href="#appliance">The appliance</a>
       <a href="#demo" class="cta">Book a demo</a>
     </span>
@@ -310,7 +324,7 @@
         <h3>See</h3>
         <p>Live gauges, state timelines, downtime Pareto and per-shift OEE — on any screen on the plant network, or a
           full-screen kiosk beside the machine.</p>
-        <span class="tag">Dashboards · kiosks · ERP API</span></div>
+        <span class="tag">Dashboards · kiosks · fleet · ERP API</span></div>
     </div>
   </div>
 </section>
@@ -335,6 +349,40 @@
         <h4>SQL Server &amp; ERP API</h4><p>Forwards to your existing SQL Server; a read-only REST API feeds OEE straight into your ERP.</p></div>
       <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span>
         <h4>Signed OTA updates</h4><p>Upload a signed package; the box verifies, applies and auto-rolls-back if the new build isn't healthy.</p></div>
+      <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M12 7.5v4M12 11.5l-6 4.5M12 11.5l6 4.5"/></svg></span>
+        <h4>Multi-site fleet</h4><p>Run several plants and see every machine on one page. Each site keeps working alone; summaries land in a shared SQL Server on your own network. No cloud.</p></div>
+      <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+        <h4>Email automations</h4><p>Home&#8209;Assistant&#8209;style rules: triggers, conditions, an email. Alert the right person when a machine stops or a value drifts, and send a note when it recovers.</p></div>
+      <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6M16 11h5M18.5 8.5v5"/></svg></span>
+        <h4>Users &amp; roles</h4><p>Named accounts with site manager, operations manager and admin roles, and security you can tune per role. One login works at every site.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== AI ASSISTANT ===================== -->
+<section class="band" id="ai" style="background:var(--panel);border-top:1px solid var(--line)">
+  <div class="wrap">
+    <div class="appl-grid">
+      <div>
+        <span class="eyebrow">New in 1.1 · AI assistant</span>
+        <h2>Ask your machines a question.</h2>
+        <p class="lede">Connect your own AI client &mdash; VS Code with Copilot, Cursor or Claude Desktop &mdash; to FACTS over
+          the plant network and ask in plain language. Every number comes from the same calculations as your dashboards.</p>
+        <ul class="spec">
+          <li><span class="k">Ask</span><span class="v">Status now, OEE and trends, programs, alarms, production, signal history</span></li>
+          <li><span class="k">Report</span><span class="v">Generate a report and save templates, with a link to the printable page</span></li>
+          <li><span class="k">Build</span><span class="v">Create email automations (with a dry run) and dashboards from a description</span></li>
+          <li><span class="k">Stay in control</span><span class="v">Personal tokens, same permissions as the user, HTTPS only, every change logged</span></li>
+          <li><span class="k">Stays private</span><span class="v">LAN only. Machine addresses, users, security, SQL and licence are never exposed</span></li>
+        </ul>
+      </div>
+      <div class="chat" aria-label="Example conversation (illustrative)">
+        <div class="cbar"><span class="dot"></span><span>AI assistant</span><span class="ill">Illustrative</span></div>
+        <div class="msg you">Which machine lost the most time yesterday, and why?</div>
+        <div class="msg bot"><b>HCN&#8209;5000</b> &mdash; 2.1 h Down, mostly one drive fault at 14:10. Availability was 71% against 88% the day before. The other four machines were within 3 points of normal.</div>
+        <div class="msg you">Email me if it happens again.</div>
+        <div class="msg bot">Created an automation: <i>Alarm active on HCN&#8209;5000</i> &rarr; email you, once an hour at most, and again when it clears. Checked against live data, it would not have fired in the last 24 h.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -353,7 +401,7 @@
           <li><span class="k">Power</span><span class="v">Wide-voltage DC · clean shutdown on power loss · watchdog</span></li>
           <li><span class="k">Network</span><span class="v">Plant LAN only · <span style="font-family:'IBM Plex Mono'">gwb-oee.local</span> · self-signed HTTPS</span></li>
           <li><span class="k">Storage</span><span class="v">Local buffer + roll-up · years of OEE in 10&nbsp;GB</span></li>
-          <li><span class="k">Access</span><span class="v">Anonymous viewer · user admin · GWB technician</span></li>
+          <li><span class="k">Access</span><span class="v">Open viewing · named users · site manager · operations manager · admin · GWB technician</span></li>
         </ul>
       </div>
       <div class="device">
@@ -383,7 +431,7 @@
   <div class="in">
     <span class="wm">FAC<span class="t">T</span><span class="t">S</span></span>
     <span>Factory Analytics &amp; Cycle Tracking System</span>
-    <span class="sp">© GWB Machine Tools · NZ &amp; Australia</span>
+    <span class="sp">v1.1 · © GWB Machine Tools · NZ &amp; Australia</span>
   </div>
 </footer>
 
