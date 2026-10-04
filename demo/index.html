@@ -163,33 +163,125 @@
   .restore.show{display:flex}
   .restore svg{width:20px;height:20px;stroke:var(--ink);fill:none;stroke-width:2}
 
-  /* widget dashboard — matches the app's Gridstack board */
-  .wboard{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;grid-auto-rows:minmax(148px,auto)}
-  .wc{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 15px;
-    display:flex;flex-direction:column;min-height:0;overflow:hidden}
-  .wc .wt{font-size:.78rem;color:var(--muted);margin-bottom:6px;flex:0 0 auto}
+  /* widget dashboard — matches the app's Gridstack board (12-col, explicit x/y/w/h per widget) */
+  .wboard{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:12px;grid-auto-rows:84px}
+  .wc{grid-column:var(--x) / span var(--w);grid-row:var(--y) / span var(--h);background:var(--surface);
+    border:1px solid var(--line);border-radius:12px;padding:11px 14px;display:flex;flex-direction:column;min-height:0;overflow:hidden}
+  .wc .wt{font-size:.76rem;color:var(--muted);margin-bottom:5px;flex:0 0 auto}
   .wc .wbody{flex:1;min-height:0;display:flex}
-  .c3{grid-column:span 3}.c4{grid-column:span 4}.c5{grid-column:span 5}.c7{grid-column:span 7}.c8{grid-column:span 8}.c12{grid-column:span 12}
-  @media(max-width:900px){.c3{grid-column:span 6}.c4,.c5,.c7,.c8{grid-column:span 12}}
+  @media(max-width:900px){.wboard{grid-auto-rows:minmax(150px,auto)}.wc{grid-column:1/-1;grid-row:auto}}
   .gl{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
   .arc{transition:stroke-dashoffset .9s cubic-bezier(.2,.7,.2,1),stroke .4s}
-  .wbar{display:flex;flex:1;min-height:22px;border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+  .gcell{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
+  .wbar{display:flex;flex:1;min-height:20px;border-radius:4px;overflow:hidden;border:1px solid var(--line)}
   .wbar i{height:100%}
-  .kpi{text-align:center}.kpi .v{font-family:Saira;font-weight:700;font-size:2.1rem;line-height:1}
-  .heat{display:grid;grid-template-columns:52px repeat(24,1fr);gap:2px;align-items:center;font-size:.58rem;width:100%}
+  .kpis{display:flex;gap:18px;flex-wrap:wrap;width:100%;justify-content:space-around;align-items:center}
+  .kpi{text-align:center}.kpi .v{font-family:Saira;font-weight:700;font-size:2.1rem;line-height:1;font-variant-numeric:tabular-nums}
+  .kpi .v small{font-size:.45em;color:var(--muted);font-weight:500;margin-left:3px}
+  .bigval{margin:auto;text-align:center}.bigval .v{font-family:Saira;font-weight:700;font-size:2.9rem;line-height:1.05;font-variant-numeric:tabular-nums}
+  .bigval .v small{font-size:.4em;color:var(--muted);font-weight:500;margin-left:4px}
+  .heat{display:grid;grid-template-columns:52px repeat(24,1fr);gap:2px;align-items:center;font-size:.58rem;width:100%;align-self:center}
   .heat .hd{text-align:center;color:var(--muted)} .heat .rl{color:var(--muted)}
-  .heat .cell{border-radius:3px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:#e6ecf4;font-size:.55rem}
+  .heat .cell{border-radius:3px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;color:#e6ecf4;font-size:.52rem}
+  .pareto{display:flex;flex-direction:column;gap:9px;width:100%;justify-content:center}
+  .pareto .pr{display:grid;grid-template-columns:1fr 34px;gap:8px;align-items:center;font-size:.76rem}
+  .pareto .pl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+  .pareto .pb{height:9px;border-radius:3px;background:var(--surface-2);overflow:hidden}
+  .pareto .pb i{display:block;height:100%;background:var(--bad);border-radius:3px}
+  .pareto .pn{text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
+  .dev{width:100%;display:flex;flex-direction:column;justify-content:center;gap:7px;font-size:.82rem}
+  .dev .r{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:5px}
+  .dev .r:last-child{border-bottom:none}.dev .r span:first-child{color:var(--muted)}
+  .trendw{flex:1;display:flex;gap:7px;min-height:0;width:100%}
+  .trendw .ax{display:flex;flex-direction:column;justify-content:space-between;font-size:.56rem;color:var(--muted);padding:2px 0;text-align:right}
+  .trendw svg{flex:1;min-width:0;height:100%}
 
-  /* kiosk mode — edge-to-edge board, no chrome (like the app) */
-  .kexit{position:fixed;top:12px;right:12px;z-index:60;display:none;background:rgba(0,0,0,.5);color:#fff;
-    border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:8px 14px;cursor:pointer;
+  /* dashboards hub */
+  .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+  .dcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+  .dcard .th{height:120px;background:var(--surface-2);display:flex;align-items:center;justify-content:center}
+  .dcard .th img{max-width:84%;max-height:100%;object-fit:contain}
+  .dcard .db{padding:14px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
+  .dcard .dn{font-family:Saira;font-weight:700;font-size:1.02rem;line-height:1.25}
+  .dcard .dm{color:var(--muted);font-size:.8rem}
+  .dcard .da{display:flex;gap:8px;margin-top:auto;padding-top:12px}
+  .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);
+    border-radius:8px;padding:7px 14px;font-family:Saira;font-weight:600;font-size:.86rem;cursor:pointer}
+  .btn:hover{border-color:var(--accent)}
+  .btn.pri{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+  .sech{font-family:Saira;font-weight:700;font-size:1.15rem;margin:30px 0 12px}
+  .rotcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .rotcard .rn{font-family:Saira;font-weight:700;font-size:1.02rem}.rotcard .rd{color:var(--muted);font-size:.82rem;flex:1;min-width:200px}
+
+  /* fleet */
+  .tabs{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .tabs button{border:0;padding:7px 15px;font-family:Saira;font-weight:600;font-size:.84rem;background:var(--surface);color:var(--muted);cursor:pointer}
+  .tabs button.on{background:var(--accent);color:var(--accent-fg)}
+  select.sel{border:1px solid var(--accent);color:var(--accent);background:transparent;border-radius:8px;padding:6px 10px;font-weight:600;font-size:.82rem}
+  .site{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+  .site .sh{display:flex;align-items:center;gap:14px;padding:14px 18px;flex-wrap:wrap}
+  .site .sn{font-family:Saira;font-weight:700;font-size:1.15rem}
+  .site .ss{color:var(--muted);font-size:.8rem}
+  .site .sm{padding:0 18px 12px;display:grid;grid-template-columns:repeat(4,minmax(0,160px));gap:8px}
+  .site .shb{padding:0 18px 14px}
+  .hrs{display:flex;height:14px;border-radius:4px;overflow:hidden;border:1px solid var(--line)}
+  .hrs i{height:100%}
+  .hkey{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:8px;font-size:.7rem;color:var(--muted)}
+  .hkey span i{width:9px;height:9px;border-radius:2px;display:inline-block;margin-right:5px;vertical-align:middle}
+  .warnchip{font-family:"IBM Plex Mono",monospace;font-size:.62rem;background:color-mix(in srgb,var(--warn) 18%,transparent);
+    color:var(--warn);border:1px solid color-mix(in srgb,var(--warn) 40%,transparent);padding:3px 9px;border-radius:20px}
+  .mtab{width:100%;border-collapse:collapse;font-size:.84rem}
+  .mtab th{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;text-align:right;padding:6px 10px;border-top:1px solid var(--line)}
+  .mtab td{padding:7px 10px;border-top:1px solid var(--line);text-align:right;font-variant-numeric:tabular-nums}
+  .mtab th:first-child,.mtab td:first-child{text-align:left}
+  .note{color:var(--muted);font-size:.8rem;margin:14px 2px 0;max-width:80ch}
+  .lrow{display:flex;align-items:center;gap:16px;padding:10px 16px;border-top:1px solid var(--line);flex-wrap:wrap}
+  .lrow img{width:72px;height:46px;object-fit:contain;flex:0 0 72px}
+  .lrow .ln{font-family:Saira;font-weight:700;font-size:.98rem;min-width:170px;flex:1 1 170px}
+  .lrow .lp{color:var(--muted);font-size:.78rem;min-width:110px}
+  .lrow .lm{display:grid;grid-template-columns:repeat(4,64px);gap:6px}
+  .lrow .lm .mt{padding:5px 7px}.lrow .lm .mt .v{font-size:1.05rem}.lrow .lm .mt .l{font-size:.5rem}
+
+  /* automations */
+  .auto{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);margin-bottom:14px;overflow:hidden}
+  .auto .ah{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .auto .ah b{font-family:Saira;font-weight:700;font-size:1.05rem}
+  .auto .ar{display:flex;gap:16px;padding:11px 18px;border-top:1px solid var(--line);align-items:baseline}
+  .auto .ah+.ar{border-top:none}
+  .auto .ak{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);min-width:64px}
+  .auto .av{font-size:.9rem;display:flex;flex-direction:column;gap:4px}
+  .auto .av .sub{color:var(--muted);font-size:.78rem}
+  .auto .af{padding:10px 18px;background:var(--surface-2);color:var(--muted);font-size:.78rem;display:flex;gap:18px;flex-wrap:wrap}
+  .sw2{margin-left:auto;width:42px;height:24px;border-radius:12px;background:var(--st-off);position:relative;cursor:pointer;border:0;flex:0 0 42px;transition:background .2s}
+  .sw2::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s}
+  .sw2.on{background:var(--good)}.sw2.on::after{left:21px}
+  .hist{width:100%;border-collapse:collapse;font-size:.84rem}
+  .hist td{padding:9px 14px;border-top:1px solid var(--line);vertical-align:top}
+  .hist tr:first-child td{border-top:none}
+  .hist .t{color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+  .out{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.06em;padding:2px 8px;border-radius:10px;color:#fff;white-space:nowrap}
+  .out.fired{background:var(--bad)}.out.resolved{background:var(--st-exec)}.out.skip{background:var(--st-off)}
+
+  /* kiosk — edge-to-edge board, no chrome (like the app) */
+  .kexit{position:fixed;bottom:12px;right:14px;z-index:60;display:none;opacity:0;transition:opacity .25s;pointer-events:none;background:rgba(0,0,0,.5);color:#fff;
+    border:1px solid rgba(255,255,255,.25);border-radius:8px;padding:6px 12px;cursor:pointer;
     font-family:Saira;font-weight:600;backdrop-filter:blur(4px)}
   .kioskbtn{display:inline-flex;align-items:center;gap:7px;background:var(--accent);color:var(--accent-fg);
     border:none;border-radius:8px;padding:8px 15px;font-family:Saira;font-weight:600;font-size:.92rem;cursor:pointer}
+  .rotbar{display:none;flex:0 0 36px;align-items:center;gap:14px;padding:0 14px;position:relative;
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .rotbar b{font-family:Saira;font-weight:700;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .rotbar .rc{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--muted);margin-right:84px}
+  .rotbar .dr{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--accent);transform-origin:left;animation:drain linear forwards}
+  @keyframes drain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
   body.kiosk .side,body.kiosk .restore{display:none!important}
   body.kiosk .kexit{display:block}
-  body.kiosk .wrap{max-width:none;padding:12px;height:100vh;overflow:hidden;display:flex}
-  body.kiosk .wboard{flex:1;height:100%;grid-auto-rows:auto;grid-template-rows:1.35fr 1fr 0.78fr 1.35fr}
+  body.kiosk .kexit.show{opacity:1;pointer-events:auto}
+  body.kiosk .wrap{max-width:none;padding:10px 12px;height:100vh;overflow:hidden;display:flex;flex-direction:column;gap:10px}
+  body.kiosk .rotbar{display:flex}
+  body.kiosk.norot .rotbar{display:none}
+  body.kiosk .wboard{flex:1;min-height:0;grid-template-rows:repeat(var(--rows),minmax(0,1fr));grid-auto-rows:auto}
 </style>
 </head>
 <body>
@@ -198,6 +290,8 @@
     <nav>
       <a class="active" data-nav="overview"><svg class="ic" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></svg> Home</a>
       <a data-nav="dashboards"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Dashboards</a>
+      <a data-nav="fleet"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.4"/><circle cx="5" cy="18" r="2.4"/><circle cx="19" cy="18" r="2.4"/><path d="M12 7.4v4M12 11.4l-6 4.6M12 11.4l6 4.6"/></svg> Fleet</a>
+      <a data-nav="automations"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg> Automations</a>
     </nav>
     <nav class="bottom">
       <div class="sec">Viewer</div>
@@ -401,7 +495,7 @@ function renderDetail(){
       <img class="mimg" src="${m.img}" alt="${m.name}" style="width:120px;height:76px;flex:0 0 120px">
       <h1 class="saira" style="font-size:2.2rem">${m.name}</h1>${stateChip(m.state)}
       <span class="badge">Demo · simulated data</span>
-      <span class="spacer"></span><button class="chip-range">▦ 8H shift ▾</button>
+      <span class="spacer"></span><button class="btn" id="opendash">Open dashboard</button><button class="chip-range">▦ 8H shift ▾</button>
     </div>
     <div class="prog" style="margin-bottom:4px">${m.program?DOCICON+'<span>Program: <b style="color:var(--ink)">'+m.program+'</b></span>':'<span class="kind" style="text-transform:capitalize">'+m.kind+'</span>'}</div>
     ${body}
@@ -420,64 +514,281 @@ function renderDetail(){
       : `<div style="color:var(--muted);font-size:.9rem">No alarms in this shift.</div>`}
     </div>`;
   view.querySelector('#back').onclick=()=>{route={view:'overview'};renderOverview();};
+  const od=document.getElementById('opendash'); if(od) od.onclick=()=>openDash(m.id);
   setActiveNav('overview');
 }
 
 function setActiveNav(key){ document.querySelectorAll('.side a[data-nav]').forEach(a=>a.classList.toggle('active',a.dataset.nav===key)); }
 
-/* ---------- widget dashboard / kiosk (matches the app's Gridstack board) ---------- */
-let kiosk=false, dashM='ppeb';
-function wGauge(pct){ const s=132,r=55,c=2*Math.PI*r,off=c*(1-pct/100),col=gaugeColor(pct);
-  return `<svg viewBox="0 0 ${s} ${s}" style="width:auto;height:100%;max-height:180px;max-width:100%"><circle cx="66" cy="66" r="${r}" fill="none" stroke="var(--gauge-track)" stroke-width="10"/><circle class="arc" cx="66" cy="66" r="${r}" fill="none" stroke="${col}" stroke-width="10" stroke-linecap="round" transform="rotate(-90 66 66)" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/><text x="66" y="78" text-anchor="middle" font-size="36" font-family="Saira" font-weight="700" fill="var(--ink)">${Math.round(pct)}</text></svg>`; }
-function wc(cls,title,body,style){ return `<div class="wc ${cls}"><div class="wt">${title}</div><div class="wbody" style="${style||''}">${body}</div></div>`; }
-function gaugeBody(title,pct){ return `<div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:0" data-r="g-${title}">${wGauge(pct)}</div><div class="gl" style="text-align:center;margin-top:2px">${title}</div>`; }
+/* ---------- deterministic helpers ---------- */
+function hstr(str){ let h=2166136261; for(let i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619); } return h>>>0; }
+function rng(seed){ let a=seed>>>0; return ()=>{ a|=0; a=a+0x6D2B79F5|0; let t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+const h01=str=>hstr(str)/4294967296;
+const localHour=()=>new Date().getHours()+new Date().getMinutes()/60;
 
-// sample data for the app-style widgets: dense state band + status-by-hour heatmap
-const DENSE=(()=>{ const o=[]; for(let i=0;i<95;i++){ const r=Math.random(); const st=r<0.74?'EXECUTING':r<0.85?'SETUP':r<0.93?'STARVED':r<0.98?'DOWN':'EXECUTING'; o.push({state:st,secs:st==='EXECUTING'?50+Math.random()*130:8+Math.random()*34}); } return o; })();
-const DTOT=DENSE.reduce((s,x)=>s+x.secs,0);
-const HEAT={active:[0,0,0,0,0,0,0,47,95,68,78,80,78,79,0,0,0,0,0,0,0,0,0,0],
-  idle:[100,100,100,100,100,100,100,53,5,32,20,17,16,17,0,0,0,0,0,0,0,0,0,0],
-  alert:[0,0,0,0,0,0,0,0,0,0,3,3,6,4,0,0,0,0,0,0,0,0,0,0]};
-const hcol={ active:v=>v?`hsl(130 46% ${12+v*0.34}%)`:'var(--surface-2)',
-  idle:v=>v?`hsl(28 58% ${14+v*0.22}%)`:'var(--surface-2)',
-  alert:v=>v?`hsl(0 55% ${16+v*4}%)`:'var(--surface-2)' };
-function heatRow(label,vals,f){ return `<div class="rl">${label}</div>`+vals.map(v=>`<div class="cell" style="background:${f(v)}">${v||''}</div>`).join(''); }
-const fmtT=d=>d.toTimeString().slice(0,5);
-
-function renderDashboard(){
-  const m=byId(dashM);
-  const startT=fmtT(new Date(Date.now()-54*60000)), endT=fmtT(new Date());
-  const bars=DENSE.map(s=>`<i style="width:${(s.secs/DTOT*100).toFixed(2)}%;background:${STATE[s.state].c}"></i>`).join('');
-  const legend=['EXECUTING','SETUP','DOWN','STARVED'].map(s=>`<span style="display:inline-flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:2px;background:${STATE[s].c};display:inline-block"></span>${s[0]+s.slice(1).toLowerCase()}</span>`).join('');
-  const kpis=[['Parts',270],['Good',252],['Bad',18],['Bends',4937],['Programs',14]].map(([l,v])=>`<div class="kpi"><div class="v">${v}</div><div class="gl">${l}</div></div>`).join('');
-  const heat=`<div class="heat"><div></div>${[...Array(24).keys()].map(h=>`<div class="hd">${h}</div>`).join('')}${heatRow('Active',HEAT.active,hcol.active)}${heatRow('Idle',HEAT.idle,hcol.idle)}${heatRow('Alert',HEAT.alert,hcol.alert)}</div>`;
-  const faults=`<div style="flex:1;display:flex;gap:8px;min-height:0">
-      <div style="display:flex;flex-direction:column;justify-content:space-between;font-size:.58rem;color:var(--muted);padding:3px 0">${[20,15,10,5,0].map(n=>`<span>${n}</span>`).join('')}</div>
-      <svg viewBox="0 0 300 100" preserveAspectRatio="none" style="flex:1;height:100%"><line x1="0" y1="97" x2="300" y2="97" stroke="var(--line)"/><polyline points="0,96 300,96" fill="none" stroke="var(--good)" stroke-width="2"/></svg>
-    </div><div style="text-align:center;font-size:.72rem;color:var(--muted);margin-top:6px">PCSS_ERR 402A : Pedal 1 NO and NC OFF.</div>`;
-  const board =
-    wc('c3','OEE',gaugeBody('OEE',oee(m)*100),'flex-direction:column') +
-    wc('c3','Availability',gaugeBody('Availability',m.a*100),'flex-direction:column') +
-    wc('c3','Performance',gaugeBody('Performance',m.p*100),'flex-direction:column') +
-    wc('c3','Quality',gaugeBody('Quality',(m.q==null?1:m.q)*100),'flex-direction:column') +
-    wc('c4','Active part',`<div style="margin:auto;text-align:center"><div class="saira" style="font-size:1.9rem;color:var(--ink-2)">${m.program}</div><div class="gl" style="margin-top:8px">Active part</div></div>`,'align-items:center;justify-content:center') +
-    wc('c8','Production',`<div style="display:flex;gap:18px;flex-wrap:wrap;width:100%;justify-content:space-around;align-items:center">${kpis}</div>`,'align-items:center') +
-    wc('c12','State',`<div class="wbar">${bars}</div><div style="display:flex;justify-content:space-between;font-size:.62rem;color:var(--muted);margin-top:4px"><span>${startT}</span><span>${endT}</span></div><div style="display:flex;gap:14px;margin-top:6px;font-size:.66rem;color:var(--muted)">${legend}</div>`,'flex-direction:column') +
-    wc('c5','Faults',faults,'flex-direction:column') +
-    wc('c7','Status by hour',heat,'flex-direction:column;overflow:auto');
-  view.innerHTML = `
-    ${kiosk?'':`<div class="head"><h1 class="saira">${m.name}</h1><span class="cap">Pressbrake · standard dashboard</span><span class="badge">Demo · simulated data</span><span class="spacer"></span><button class="kioskbtn" id="kenter">▣ Kiosk mode</button></div>`}
-    <div class="wboard">${board}</div>`;
-  const ke=document.getElementById('kenter'); if(ke) ke.onclick=enterKiosk;
-  setActiveNav(kiosk?'':'dashboards');
+/* ---------- per-machine data behind the dashboard widgets ---------- */
+function ensureData(m){
+  if(m.dense) return;
+  const r=rng(hstr(m.id)); const o=[]; const down=m.kind==='utility'?0.01:0.05;
+  for(let i=0;i<95;i++){ const x=r(); const st=x<0.74?'EXECUTING':x<0.85?'SETUP':x<0.93?'STARVED':x<0.93+down?'DOWN':'EXECUTING';
+    o.push({state:st,secs:st==='EXECUTING'?50+r()*130:8+r()*34}); }
+  o[o.length-1]={state:m.state,secs:60};
+  m.dense=o;
+  if(m.kind==='utility'){
+    const walk=(base,step,n)=>{ const a=[]; let v=base; for(let i=0;i<n;i++){ v+=(r()-.5)*step; a.push(v);} return a; };
+    m.trend={pur:walk(99.6,.12,120),pre:walk(298,5,120)};
+    const pv=procVal(m,'purity'), qv=procVal(m,'pressure');
+    const dp=pv.v-m.trend.pur[119], dq=qv.v-m.trend.pre[119];
+    m.trend.pur=m.trend.pur.map(v=>v+dp); m.trend.pre=m.trend.pre.map(v=>v+dq);
+  }
+  const hr=[]; for(let h=0;h<24;h++){ const rr=rng(hstr(m.id+'h'+h)); const open=h>=7;
+    const act=open?Math.round(42+rr()*52):0, alr=open&&rr()<.3?Math.round(rr()*6):0;
+    hr.push({act,idle:open?100-act-alr:100,alr}); }
+  m.heat=hr;
 }
-function enterKiosk(){ kiosk=true; document.body.classList.add('kiosk'); route={view:'dashboard'}; renderDashboard();
-  if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{}); }
-function exitKiosk(){ kiosk=false; document.body.classList.remove('kiosk'); renderDashboard();
-  if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{}); }
+const FAULTS={
+  ppeb:[['PCSS_ERR 402A : Pedal 1 NO and NC OFF.',7],['Error [301] : Z axis interlock message',3],['Hydraulic oil temperature warning',2]],
+  puma:[['Cutting head: lens contamination warning',4],['Assist gas pressure low',2],['Nozzle touch sensor fault',1]],
+  strippit:[['Punch station tool not ready',3],['Sheet clamp position fault',2]],
+  hcn:[['Spindle load limit reached',3],['Coolant level low',2],['Door interlock open during cycle',1]],
+};
+const DASHES=[
+  {id:'ppeb',m:'ppeb',tpl:'pressbrake',name:'PPEB 220/30 — Pressbrake — standard'},
+  {id:'puma',m:'puma',tpl:'laser',name:'Puma 6kW — Laser — standard'},
+  {id:'strippit',m:'strippit',tpl:'glance',name:'Strippit PX-1530 — OEE at a glance'},
+  {id:'hcn',m:'hcn',tpl:'glance',name:'HCN-5000 — OEE at a glance'},
+  {id:'nitro',m:'nitro',tpl:'utility',name:'NitroCube N2 plant — Utility — process & uptime'},
+];
+const dashById=id=>DASHES.find(d=>d.id===id);
+// the app's own default layouts (Core/DashboardTemplates.cs): x, y, w, h on a 12-column grid
+const G=(t,x,y,w,h,title,metric)=>({t,x,y,w,h,title,metric});
+const LAYOUTS={
+  pressbrake:[G('gauge',0,0,3,3,'OEE','oee'),G('gauge',3,0,3,3,'Availability','availability'),G('gauge',6,0,3,3,'Performance','performance'),G('gauge',9,0,3,3,'Quality','quality'),
+    G('text',0,3,4,2,'Active part'),G('prod',4,3,8,2,'Production'),G('state',0,5,12,2,'State'),G('faults',0,7,5,3,'Faults'),G('heat',5,7,7,3,'Status by hour')],
+  laser:[G('gauge',0,0,3,3,'OEE','oee'),G('gauge',3,0,3,3,'Availability','availability'),G('gauge',6,0,3,3,'Performance','performance'),G('device',9,0,3,3,'Device status'),
+    G('text',0,3,4,2,'Nesting'),G('prod',4,3,8,2,'Production'),G('state',0,5,12,2,'State'),G('faults',0,7,5,3,'Faults'),G('heat',5,7,7,3,'Status by hour')],
+  glance:[G('gauge',0,0,3,3,'OEE','oee'),G('gauge',3,0,3,3,'Availability','availability'),G('gauge',6,0,3,3,'Performance','performance'),G('gauge',9,0,3,3,'Quality','quality'),G('state',0,3,12,2,'State')],
+  utility:[G('kpi',0,0,3,3,'Uptime','uptime'),G('kpi',3,0,3,3,'O2 purity','purity'),G('kpi',6,0,3,3,'Pressure','pressure'),G('device',9,0,3,3,'Device status'),
+    G('trend',0,3,12,3,'Process trend'),G('state',0,6,12,2,'State')],
+};
+const rowsOf=l=>Math.max(...l.map(w=>w.y+w.h));
+
+function wGauge(pct){ const s=132,r=55,c=2*Math.PI*r,col=pct==null?'var(--gauge-track)':gaugeColor(pct),off=pct==null?c:c*(1-pct/100);
+  return `<svg viewBox="0 0 ${s} ${s}" style="width:auto;height:100%;max-height:180px;max-width:100%"><circle cx="66" cy="66" r="${r}" fill="none" stroke="var(--gauge-track)" stroke-width="10"/><circle class="arc" cx="66" cy="66" r="${r}" fill="none" stroke="${col}" stroke-width="10" stroke-linecap="round" transform="rotate(-90 66 66)" stroke-dasharray="${c.toFixed(1)}" stroke-dashoffset="${off.toFixed(1)}"/><text x="66" y="78" text-anchor="middle" font-size="36" font-family="Saira" font-weight="700" fill="${pct==null?'var(--muted)':'var(--ink)'}">${pct==null?'—':Math.round(pct)}</text></svg>`; }
+const hcol={ act:v=>v?`hsl(130 46% ${12+v*0.34}%)`:'var(--surface-2)', idle:v=>v?`hsl(28 58% ${14+v*0.22}%)`:'var(--surface-2)', alr:v=>v?`hsl(0 55% ${16+v*4}%)`:'var(--surface-2)' };
+const fmtT=d=>d.toTimeString().slice(0,5);
+function procVal(m,key){ const p=m.process.find(p=>p.l.toLowerCase().includes(key)); return p; }
+
+function trendSVG(m){
+  const W=600,H=100, line=(a,lo,hi,col)=>`<polyline fill="none" stroke="${col}" stroke-width="2" vector-effect="non-scaling-stroke" points="${a.map((v,i)=>`${(i/(a.length-1)*W).toFixed(1)},${(H-(v-lo)/(hi-lo)*H).toFixed(1)}`).join(' ')}"/>`;
+  const grid=[0,25,50,75,100].map(y=>`<line x1="0" y1="${y}" x2="${W}" y2="${y}" stroke="var(--line)" vector-effect="non-scaling-stroke"/>`).join('');
+  const t=m.trend, plo=98.8, phi=100.2, rlo=270, rhi=325;
+  return `<div class="ax"><span>${phi.toFixed(1)}</span><span>${((plo+phi)/2).toFixed(1)}</span><span>${plo.toFixed(1)}</span></div>
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${grid}${line(t.pur,plo,phi,'var(--accent)')}${line(t.pre,rlo,rhi,'var(--warn)')}</svg>
+    <div class="ax"><span>${rhi}</span><span>${Math.round((rlo+rhi)/2)}</span><span>${rlo}</span></div>`;
+}
+
+function widgetInner(w,m){
+  ensureData(m);
+  switch(w.t){
+    case 'gauge': { const pct=w.metric==='oee'?oee(m)*100:w.metric==='availability'?m.a*100:w.metric==='performance'?m.p*100:(m.q==null?null:m.q*100);
+      return `<div class="gcell">${wGauge(pct)}</div><div class="gl" style="text-align:center;margin-top:2px">${w.title}</div>`; }
+    case 'text': return `<div class="bigval"><div class="v" style="font-size:1.9rem;color:var(--ink-2)">${m.program}</div><div class="gl" style="margin-top:8px">${w.title}</div></div>`;
+    case 'prod': { const k=m.kind==='laser'?[['Sheets',m.completed],['Programs',m.programs.length]]:
+        [['Parts',m.completed],['Good',m.good],['Bad',m.bad],['Bends',m.completed*27],['Programs',m.programs.length]];
+      return `<div class="kpis">${k.map(([l,v])=>`<div class="kpi"><div class="v">${v}</div><div class="gl">${l}</div></div>`).join('')}</div>`; }
+    case 'state': { const tot=m.dense.reduce((s,x)=>s+x.secs,0)||1;
+      const bars=m.dense.map(x=>`<i style="width:${(x.secs/tot*100).toFixed(2)}%;background:${STATE[x.state].c}"></i>`).join('');
+      const key=['EXECUTING','SETUP','DOWN','STARVED'].map(s=>`<span style="display:inline-flex;align-items:center;gap:5px"><span style="width:9px;height:9px;border-radius:2px;background:${STATE[s].c};display:inline-block"></span>${s[0]+s.slice(1).toLowerCase()}</span>`).join('');
+      return `<div style="flex:1;display:flex;flex-direction:column;min-height:0;width:100%"><div class="wbar">${bars}</div>
+        <div style="display:flex;justify-content:space-between;font-size:.62rem;color:var(--muted);margin-top:4px"><span>${fmtT(new Date(Date.now()-3600000))}</span><span>${fmtT(new Date())}</span></div>
+        <div style="display:flex;gap:14px;margin-top:6px;font-size:.66rem;color:var(--muted)">${key}</div></div>`; }
+    case 'faults': { const f=FAULTS[m.id]||[]; const mx=Math.max(1,...f.map(x=>x[1]));
+      return `<div class="pareto">${f.map(([n,c])=>`<div class="pr"><div><div class="pl">${n}</div><div class="pb"><i style="width:${c/mx*100}%"></i></div></div><div class="pn">${c}</div></div>`).join('')}</div>`; }
+    case 'heat': { const hr=localHour();
+      const row=(label,key,f)=>`<div class="rl">${label}</div>`+m.heat.map((c,h)=>{ const v=h<=Math.floor(hr)?c[key]:0; return `<div class="cell" style="background:${f(v)}">${v||''}</div>`; }).join('');
+      return `<div class="heat"><div></div>${[...Array(24).keys()].map(h=>`<div class="hd">${h}</div>`).join('')}${row('Active','act',hcol.act)}${row('Idle','idle',hcol.idle)}${row('Alert','alr',hcol.alr)}</div>`; }
+    case 'device': return `<div class="dev">
+        <div class="r"><span>Connection</span><span><span class="dot" style="margin-right:6px"></span>Connected</span></div>
+        <div class="r"><span>State</span>${stateChip(m.state)}</div>
+        <div class="r"><span>${m.kind==='utility'?'Plant':'Program'}</span><span>${m.program||'Nitrogen generation'}</span></div>
+        <div class="r"><span>Firmware</span><span>${m.kind==='utility'?'Unitronics 3.4':'Touch 8.9.2'}</span></div>
+        <div class="r"><span>Last data</span><span>just now</span></div></div>`;
+    case 'kpi': { let v,u='';
+      if(w.metric==='uptime'){ v=(m.uptime*100).toFixed(1); u='%'; }
+      else if(w.metric==='purity'){ const p=procVal(m,'purity'); v=p.v.toFixed(2); u='%'; }
+      else { const p=procVal(m,'pressure'); v=Math.round(p.v); u='bar'; }
+      return `<div class="bigval"><div class="v">${v}<small>${u}</small></div><div class="gl" style="margin-top:8px">${w.title}</div></div>`; }
+    case 'trend': return `<div style="flex:1;display:flex;flex-direction:column;min-height:0;width:100%"><div class="trendw" data-r="trend">${trendSVG(m)}</div>
+        <div style="display:flex;gap:16px;margin-top:6px;font-size:.66rem;color:var(--muted)"><span><i style="display:inline-block;width:9px;height:3px;background:var(--accent);margin-right:5px;vertical-align:middle"></i>O2 purity (%)</span><span><i style="display:inline-block;width:9px;height:3px;background:var(--warn);margin-right:5px;vertical-align:middle"></i>Pressure (bar, right axis)</span></div></div>`;
+  }
+  return '';
+}
+const LIVE_TYPES=new Set(['gauge','prod','state','device','kpi','trend','text']);
+function board(d){
+  const m=byId(d.m), L=LAYOUTS[d.tpl];
+  return `<div class="wboard" style="--rows:${rowsOf(L)}">`+L.map((w,i)=>
+    `<div class="wc" data-w="${i}" style="--x:${w.x+1};--w:${w.w};--y:${w.y+1};--h:${w.h}"><div class="wt">${w.title}</div><div class="wbody" style="${['gauge','device','kpi','text'].includes(w.t)?'flex-direction:column':''}">${widgetInner(w,m)}</div></div>`).join('')+`</div>`;
+}
+
+/* ---------- views: dashboards hub, a dashboard, kiosk + rotation ---------- */
+let kiosk=false, curDash='ppeb', rot=null;
+const ROT_SECS=15;
+function openDash(id){ curDash=id; route={view:'dash',id}; renderDash(); }
+function renderDashboards(){
+  const cards=DASHES.map(d=>{ const m=byId(d.m); const n=LAYOUTS[d.tpl].length;
+    return `<div class="dcard"><div class="th"><img src="${m.img}" alt=""></div><div class="db"><div class="dn">${d.name}</div>
+      <div class="dm">${n} widgets · scoped to ${m.name}</div>
+      <div class="da"><button class="btn pri" data-open="${d.id}">Open</button><button class="btn" data-kiosk="${d.id}">Kiosk</button></div></div></div>`; }).join('');
+  view.innerHTML=`<div class="head"><h1 class="saira">Dashboards</h1><span class="cap">One board per machine, built from templates and editable in the app</span>
+      <span class="badge">Demo · simulated data</span><span class="spacer"></span><button class="btn" disabled title="Create from a template, import, or build your own in the full app">＋ New dashboard</button></div>
+    <div class="dgrid">${cards}</div>
+    <div class="sech">Rotating kiosks</div>
+    <div class="rotcard"><div class="rn">Shop floor loop</div>
+      <div class="rd">${DASHES.length} dashboards · ${ROT_SECS} s each. Cycles on one wall display, with a title bar showing which dashboard is up.</div>
+      <button class="kioskbtn" id="rotgo">▣ Start rotating kiosk</button></div>`;
+  view.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openDash(b.dataset.open));
+  view.querySelectorAll('[data-kiosk]').forEach(b=>b.onclick=()=>enterKiosk(b.dataset.kiosk,false));
+  document.getElementById('rotgo').onclick=()=>enterKiosk(DASHES[0].id,true);
+  setActiveNav('dashboards');
+}
+function renderDash(){
+  const d=dashById(curDash), m=byId(d.m);
+  const head=kiosk?'':`<div class="back" id="dback"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg> Dashboards</div>
+    <div class="head"><h1 class="saira" style="font-size:1.7rem">${d.name}</h1><span class="badge">Demo · simulated data</span><span class="spacer"></span>
+      <button class="kioskbtn" id="kenter">▣ Kiosk mode</button></div>`;
+  const bar=kiosk&&rot?`<div class="rotbar"><b>${d.name}</b><span class="spacer"></span><span class="rc">${DASHES.indexOf(d)+1} / ${DASHES.length}</span><i class="dr" style="animation-duration:${ROT_SECS}s"></i></div>`:'';
+  view.innerHTML=head+bar+board(d);
+  const ke=document.getElementById('kenter'); if(ke) ke.onclick=()=>enterKiosk(curDash,false);
+  const bk=document.getElementById('dback'); if(bk) bk.onclick=()=>{route={view:'dashboards'};renderDashboards();};
+  setActiveNav('dashboards');
+}
+function enterKiosk(id,rotating){
+  curDash=id; kiosk=true; route={view:'dash',id};
+  document.body.classList.add('kiosk'); document.body.classList.toggle('norot',!rotating);
+  clearInterval(rotTimer); rot=rotating?{}:null; renderDash();
+  if(rotating) rotTimer=setInterval(()=>{ const i=(DASHES.findIndex(d=>d.id===curDash)+1)%DASHES.length; curDash=DASHES[i].id; route={view:'dash',id:curDash}; renderDash(); },ROT_SECS*1000);
+  if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{});
+}
+let rotTimer=null;
+function exitKiosk(){ kiosk=false; rot=null; clearInterval(rotTimer); document.body.classList.remove('kiosk','norot');
+  if(document.fullscreenElement && document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+  route={view:'dashboards'}; renderDashboards(); }
 document.getElementById('kexit').onclick=exitKiosk;
-document.addEventListener('fullscreenchange',()=>{ if(!document.fullscreenElement && kiosk){ kiosk=false; document.body.classList.remove('kiosk'); if(route.view==='dashboard') renderDashboard(); } });
+let kxTimer=null;
+document.addEventListener('mousemove',()=>{ if(!kiosk) return; const b=document.getElementById('kexit'); b.classList.add('show'); clearTimeout(kxTimer); kxTimer=setTimeout(()=>b.classList.remove('show'),3000); });
+document.addEventListener('fullscreenchange',()=>{ if(!document.fullscreenElement && kiosk) exitKiosk(); });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape' && kiosk) exitKiosk(); });
+
+/* ---------- fleet: this site plus three simulated plants, each in its own time zone ---------- */
+const SITES=[
+ {id:'demo',name:'Demonstration plant',zone:'Pacific/Auckland',pat:'always',sh:[.60,.07,.04,.04,.25,0],P:.88,Q:.98,
+  mach:null},
+ {id:'wlg',name:'Wellington',zone:'Pacific/Auckland',pat:'two',sh:[.52,.06,.04,.03,.35,0],P:.91,Q:.97,mach:[
+   ['Dyna-Press 40/12','pressbrake','img/dynapress.png'],['PPEB 135/30','pressbrake','img/ppeb.png'],['Phoenix 4kW','laser','img/phoenix.png'],['NitroCube N2 plant','utility','img/nitrocube.png']]},
+ {id:'bne',name:'Brisbane',zone:'Australia/Brisbane',pat:'cont',sh:[.66,.08,.05,.09,.12,0],P:.84,Q:.96,bad7:true,mach:[
+   ['Taurus 10kW','laser','img/taurus.png'],['Lynx 3kW','laser','img/lynx.png'],['EasyForm 220/30','pressbrake','img/easyform.png'],['ToolCell 135/30','pressbrake','img/toolcell.png'],['Strippit PX-1530','punching','img/strippit.png']]},
+ {id:'per',name:'Perth',zone:'Australia/Perth',pat:'six',sh:[.56,.07,.05,.05,.27,0],P:.79,Q:.97,flaky:true,mach:[
+   ['Puma 6kW','laser','img/puma.png'],['PPED 170/30','pressbrake','img/pped.png'],['HCN-5000 machining centre','machining','img/hcn.png']]},
+];
+SITES[0].mach=MACHINES.map(m=>[m.name,m.kind,m.img,m.id]);
+const KIND_LABEL={pressbrake:'Pressbrake',laser:'Laser',punching:'Punching',machining:'Machining',utility:'Utility'};
+function localParts(zone){ const f=new Intl.DateTimeFormat('en-GB',{timeZone:zone,weekday:'short',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());
+  const g=t=>f.find(p=>p.type===t).value; return {dow:g('weekday'),h:+g('hour')%24,min:+g('minute')}; }
+function onShift(pat,dow,h){ const wk=['Mon','Tue','Wed','Thu','Fri'].includes(dow);
+  if(pat==='always') return true;
+  if(pat==='two') return (wk&&h>=6&&h<22)||(dow==='Sat'&&h>=6&&h<12);
+  if(pat==='cont') return wk||((dow==='Sat'||dow==='Sun')&&h>=6&&h<14);
+  return (wk||dow==='Sat')&&h>=6&&h<22; }
+function fleetState(site,mm,idx){
+  const lp=localParts(site.zone);
+  if(site.id==='demo') return byId(mm[3]).state;
+  if(!onShift(site.pat,lp.dow,lp.h)) return 'OFF';
+  const x=h01(site.id+idx+Math.floor(Date.now()/150000));
+  const down=site.bad7?.10:.06;
+  return x<.76?'EXECUTING':x<.84?'SETUP':x<.90?'STARVED':x<.90+down?'DOWN':'EXECUTING'; }
+const PERIODS={today:['Today',null],yday:['Yesterday',24],w7:['Last 7 days',168]};
+let fleetTab='site', fleetPeriod='yday', fleetLayout='rows';
+function siteStats(site,period,key){
+  const j=s=>(h01(site.id+period+key+s)-.5)*.04;
+  let sh=site.sh.slice(); sh=sh.map((v,i)=>Math.max(0,v+(i<5?j(i):0)));
+  if(site.bad7&&period==='w7'){ sh[0]-=.06; sh[3]+=.05; sh[1]+=.01; }
+  const tot=sh.reduce((a,b)=>a+b,0); sh=sh.map(v=>v/tot);
+  const lp=localParts(site.zone), todayH=Math.max(1,lp.h+lp.min/60);
+  const hours=period==='today'?todayH:PERIODS[period][1];
+  const A=sh[0], P=clamp(site.P+j(9),.5,.99), Q=clamp(site.Q+j(8),.85,1);
+  return {sh,A,P,Q,O:A*P*Q,hours};
+}
+function siteView(site){
+  const st=siteStats(site,fleetPeriod,'s'), n=site.mach.length, lp=localParts(site.zone);
+  const mh=n*st.hours;
+  const names=['Producing','Setup','Waiting','Down','Switched off','No data'];
+  const cols=['var(--st-exec)','var(--st-setup)','var(--st-starved)','var(--st-down)','var(--st-off)','#b8c0cc'];
+  const bar=st.sh.map((v,i)=>`<i style="width:${(v*100).toFixed(2)}%;background:${cols[i]}" title="${names[i]} ${(v*mh).toFixed(0)} h"></i>`).join('');
+  const key=st.sh.map((v,i)=>v>0.0005?`<span><i style="background:${cols[i]}"></i>${names[i]} ${(v*mh).toFixed(0)} h</span>`:'').join('');
+  const prod=site.mach.filter(x=>x[1]!=='utility'), hasQ=site.mach.some(x=>x[1]==='pressbrake');
+  const rows=site.mach.map((x,i)=>{ const u=x[1]==='utility'; const s2=siteStats(site,fleetPeriod,x[0]);
+    const q=(x[1]==='pressbrake'||x[1]==='machining')?s2.Q:null;
+    return `<tr><td>${x[0]}</td><td>${KIND_LABEL[x[1]]}</td><td>${u?'Uptime '+Math.round(clamp(s2.A+.3,.9,.995)*100)+'%':Math.round(s2.O*(q==null?1:1)*100)+'%'}</td><td>${u?'—':Math.round(s2.A*100)+'%'}</td><td>${u?'—':Math.round(s2.P*100)+'%'}</td><td>${q==null?'—':Math.round(q*100)+'%'}</td></tr>`; }).join('');
+  const lag=site.flaky&&Math.floor(Date.now()/60000)%5===0;
+  const running=site.mach.filter((x,i)=>fleetState(site,x,i)==='EXECUTING').length;
+  return `<div class="site"><div class="sh"><div><div class="sn">${site.name}</div><div class="ss">${n} machines · ${site.id==='demo'?'this site':'local time'} <span data-clock="${site.zone}">${String(lp.h).padStart(2,'0')}:${String(lp.min).padStart(2,'0')}</span> · ${running} running</div></div>
+      <span class="spacer"></span>${lag?'<span class="warnchip">last contact 2 min ago</span>':''}</div>
+    <div class="sm">${metricTile('OEE',st.O,true)}${metricTile('Availability',st.A)}${metricTile('Performance',st.P)}${metricTile('Quality',hasQ?st.Q:null)}</div>
+    <div class="shb"><div class="hrs">${bar}</div><div class="hkey">${key}</div></div>
+    <details style="border-top:1px solid var(--line)"><summary style="cursor:pointer;padding:10px 18px;color:var(--accent);font-size:.84rem;font-weight:600">Machines</summary>
+      <table class="mtab"><thead><tr><th>Machine</th><th>Type</th><th>OEE</th><th>Avail.</th><th>Perf.</th><th>Qual.</th></tr></thead><tbody>${rows}</tbody></table></details></div>`;
+}
+function liveRows(site){
+  const lp=localParts(site.zone);
+  const rows=site.mach.map((x,i)=>{ const stt=fleetState(site,x,i), u=x[1]==='utility', off=stt==='OFF';
+    const s2=siteStats(site,'yday',x[0]); const q=(x[1]==='pressbrake'||x[1]==='machining')?s2.Q:null;
+    const mt=u?`<div class="mt primary"><div class="v">${Math.round(clamp(s2.A+.3,.9,.995)*100)}<span style="font-size:.55em;color:var(--muted)">%</span></div><div class="l">Uptime</div></div>`
+      : metricTile('OEE',off?null:s2.O,true)+metricTile('Avail',off?null:s2.A)+metricTile('Perf',off?null:s2.P)+metricTile('Qual',off?null:q);
+    return `<div class="lrow"><img src="${x[2]}" alt=""><div class="ln">${x[0]}</div>${stateChip(stt)}<div class="lp">${KIND_LABEL[x[1]]}</div><span class="spacer"></span><div class="lm">${mt}</div></div>`; }).join('');
+  return `<div class="site"><div class="sh" style="padding:12px 16px"><div class="sn" style="font-size:1.02rem">${site.name}</div><div class="ss">local time <span data-clock="${site.zone}">${String(lp.h).padStart(2,'0')}:${String(lp.min).padStart(2,'0')}</span></div></div>${rows}</div>`;
+}
+function renderFleet(){
+  const body=fleetTab==='live'?SITES.map(liveRows).join('')
+    :SITES.map(siteView).join('')+`<p class="note"><b>Monitored</b> time is every hour FACTS could see a machine. Availability = producing ÷ monitored time, so switched-off time counts against it. Each site uses its own local calendar day; utilities show Uptime and are left out of site OEE.</p>`;
+  view.innerHTML=`<div class="head"><h1 class="saira">Fleet</h1><span class="cap">${SITES.length} sites · ${SITES.reduce((a,s)=>a+s.mach.length,0)} machines</span><span class="badge">Demo · simulated data</span><span class="spacer"></span>
+      ${fleetTab==='site'?`<select class="sel" id="fper">${Object.entries(PERIODS).map(([k,v])=>`<option value="${k}" ${k===fleetPeriod?'selected':''}>${v[0]}</option>`).join('')}</select>`:''}
+      <span class="tabs"><button data-ft="live" class="${fleetTab==='live'?'on':''}">Live</button><button data-ft="site" class="${fleetTab==='site'?'on':''}">By site</button></span></div>${body}`;
+  view.querySelectorAll('[data-ft]').forEach(b=>b.onclick=()=>{fleetTab=b.dataset.ft;renderFleet();});
+  const fp=document.getElementById('fper'); if(fp) fp.onchange=()=>{fleetPeriod=fp.value;renderFleet();};
+  setActiveNav('fleet');
+}
+function tickClocks(){ document.querySelectorAll('[data-clock]').forEach(el=>{ const lp=localParts(el.dataset.clock); el.textContent=String(lp.h).padStart(2,'0')+':'+String(lp.min).padStart(2,'0'); }); }
+
+/* ---------- automations: the two example rules the real demo seeds + their history ---------- */
+const RULES=[
+ {id:'n2',name:'Nitrogen plant down for 5 minutes',on:true,when:['NitroCube N2 plant status is Down or Off for 5 min'],only:[],
+  then:'Email maintenance@example.com',then2:'At most every 30 min · send a follow-up when things are back to normal',cool:30,res:true},
+ {id:'pb',name:'Press brake alarm during office hours',on:true,when:['PPEB 220/30 · any alarm active for 30 s'],only:['Mon, Tue, Wed, Thu, Fri 07:00-17:00'],
+  then:'Email production@example.com',then2:'At most every 15 min',cool:15,res:false},
+];
+function ago(min){ const d=new Date(Date.now()-min*60000); return d.toLocaleString('en-GB',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
+function renderAutomations(){
+  const cards=RULES.map(r=>`<div class="auto"><div class="ah"><b>${r.name}</b><button class="sw2 ${r.on?'on':''}" data-sw="${r.id}" title="Switch on or off" aria-label="Switch ${r.name} on or off"></button></div>
+    <div class="ar"><span class="ak">When</span><span class="av">${r.when.map(w=>`<span>${w}</span>`).join('')}<span class="sub">One email when this starts, not repeated while it lasts</span></span></div>
+    ${r.only.length?`<div class="ar"><span class="ak">Only if</span><span class="av">${r.only.map(w=>`<span>${w}</span>`).join('')}</span></div>`:''}
+    <div class="ar"><span class="ak">Then</span><span class="av"><span>${r.then}</span><span class="sub">${r.then2}</span></span></div>
+    <div class="af"><span>Cooldown ${r.cool} min</span><span>${r.res?'Follow-up email when resolved':'No follow-up email'}</span><span>Email is off in this demo — nothing is sent</span></div></div>`).join('');
+  const at=(daysBack,h,m)=>{ const d=new Date(); d.setDate(d.getDate()-daysBack); d.setHours(h,m,0,0); return d; };
+  const lastWk=(()=>{ let n=1; for(;n<8;n++){ const d=at(n,12,0); if(d.getDay()>=1&&d.getDay()<=5) break; } return n; })();
+  const E=[[at(1,14,22),'n2','fired','NitroCube N2 plant status is Down for 5 min'],[at(1,14,41),'n2','resolved','Resolved after 19 min'],
+           [at(lastWk,9,12),'pb','fired','PPEB 220/30 · PCSS_ERR 402A active for 30 s'],[at(lastWk,9,21),'pb','skip','Skipped: cooldown (15 min) after the previous email'],
+           [at(lastWk,17,42),'pb','skip','Suppressed: outside Mon, Tue, Wed, Thu, Fri 07:00-17:00'],
+           [at(4,3,10),'n2','fired','NitroCube N2 plant status is Off for 5 min'],[at(4,3,41),'n2','resolved','Resolved after 31 min']].sort((x,y)=>y[0]-x[0]);
+  const H=E.map(([d,id,o,t])=>[d,id,o,t]);
+  const lab={fired:'Fired',resolved:'Resolved',skip:'Skipped'};
+  const hist=H.map(([dt,id,o,d])=>`<tr><td class="t">${dt.toLocaleString('en-GB',{weekday:'short',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})}</td><td>${RULES.find(r=>r.id===id).name}</td><td><span class="out ${o}">${lab[o]}</span></td><td>${d}${o==='fired'||o==='resolved'?' <span style="color:var(--muted)">(recorded, not sent: email off)</span>':''}</td></tr>`).join('');
+  view.innerHTML=`<div class="head"><h1 class="saira">Automations</h1><span class="cap">Triggers, conditions and an email</span><span class="badge">Demo · simulated data</span><span class="spacer"></span>
+      <button class="btn" disabled title="Create and edit rules in the full app">＋ New automation</button></div>${cards}
+    <div class="sech">History</div><div class="auto" style="margin:0"><table class="hist"><tbody>${hist}</tbody></table></div>`;
+  view.querySelectorAll('[data-sw]').forEach(b=>b.onclick=()=>{ const r=RULES.find(x=>x.id===b.dataset.sw); r.on=!r.on; b.classList.toggle('on',r.on); });
+  setActiveNav('automations');
+}
 
 /* ---------- live simulation ---------- */
 const NEXT={EXECUTING:['SETUP','STARVED','DOWN'],SETUP:['EXECUTING'],STARVED:['EXECUTING'],DOWN:['EXECUTING'],OFF:['EXECUTING']};
@@ -500,7 +811,10 @@ function tickModel(){
       const opts=NEXT[m.state]; const ns=opts[Math.floor(Math.random()*opts.length)];
       m.state=ns; m.tl.push({state:ns,secs:6});
       if(m.tl.length>14) m.tl.shift();
-    }
+      ensureData(m); m.dense.push({state:ns,secs:20}); if(m.dense.length>110) m.dense.shift();
+    } else { ensureData(m); m.dense[m.dense.length-1].secs+=6; }
+    if(m.trend){ const p=procVal(m,'purity'), q=procVal(m,'pressure');
+      m.trend.pur.push(p.v); m.trend.pur.shift(); m.trend.pre.push(q.v); m.trend.pre.shift(); }
   });
 }
 function updateLive(){
@@ -530,25 +844,34 @@ function updateLive(){
     const brk=view.querySelector('[data-r="brk"]'); if(brk) brk.innerHTML=stateBreakdown(m.tl);
     const chip=view.querySelector('.head .state'); if(chip){chip.style.background=STATE[m.state].c;chip.textContent=STATE[m.state].label;}
     const pv=view.querySelector('[data-r="pv"]'); if(pv&&m.kind==='utility') pv.innerHTML=m.process.map(p=>`<div class="b"><div class="v">${fmt(p.v)} <span style="font-size:.6em;color:var(--muted)">${p.u}</span></div><div class="l">${p.l}</div></div>`).join('');
-  } else if(route.view==='dashboard'){
-    const m=byId(dashM);
-    [['OEE',oee(m)*100],['Availability',m.a*100],['Performance',m.p*100],['Quality',(m.q==null?1:m.q)*100]].forEach(([t,pct])=>{
-      const el=view.querySelector(`[data-r="g-${t}"]`); if(el) el.innerHTML=wGauge(pct);
-    });
+  } else if(route.view==='dash'){
+    const d=dashById(curDash), m=byId(d.m), L=LAYOUTS[d.tpl];
+    L.forEach((w,i)=>{ if(!LIVE_TYPES.has(w.t)) return; const el=view.querySelector(`.wc[data-w="${i}"] .wbody`); if(el) el.innerHTML=widgetInner(w,m); });
   }
+  tickClocks();
 }
 
 // nav routing
 document.querySelector('.side a[data-nav="overview"]').onclick=()=>{ route={view:'overview'}; renderOverview(); };
-document.querySelector('.side a[data-nav="dashboards"]').onclick=()=>{ route={view:'dashboard'}; renderDashboard(); };
+document.querySelector('.side a[data-nav="dashboards"]').onclick=()=>{ route={view:'dashboards'}; renderDashboards(); };
+document.querySelector('.side a[data-nav="fleet"]').onclick=()=>{ route={view:'fleet'}; renderFleet(); };
+document.querySelector('.side a[data-nav="automations"]').onclick=()=>{ route={view:'automations'}; renderAutomations(); };
 // collapsible sidebar
 const sideEl=document.querySelector('.side'), restoreEl=document.getElementById('restore');
 document.querySelector('.side .hide').onclick=()=>{ sideEl.classList.add('collapsed'); restoreEl.classList.add('show'); };
 restoreEl.onclick=()=>{ sideEl.classList.remove('collapsed'); restoreEl.classList.remove('show'); };
 
-const openM=QS.get('m');
-if(QS.get('kiosk')==='1'){ kiosk=true; document.body.classList.add('kiosk'); route={view:'dashboard'}; renderDashboard(); }
-else if(QS.get('view')==='dashboard'){ route={view:'dashboard'}; renderDashboard(); }
+const openM=QS.get('m'), qd=QS.get('d')&&dashById(QS.get('d'))?QS.get('d'):'ppeb', qv=QS.get('view');
+if(QS.get('layout')==='grid') layout='grid';
+if(QS.get('tab')==='live') fleetTab='live';
+if(PERIODS[QS.get('period')]) fleetPeriod=QS.get('period');
+if(QS.get('kiosk')==='1'){ curDash=qd; kiosk=true; document.body.classList.add('kiosk'); const rotating=QS.get('rotation')==='1'; document.body.classList.toggle('norot',!rotating);
+  rot=rotating?{}:null; route={view:'dash',id:curDash}; renderDash();
+  if(rotating) rotTimer=setInterval(()=>{ const i=(DASHES.findIndex(x=>x.id===curDash)+1)%DASHES.length; curDash=DASHES[i].id; route={view:'dash',id:curDash}; renderDash(); },ROT_SECS*1000); }
+else if(qv==='dashboards'){ route={view:'dashboards'}; renderDashboards(); }
+else if(qv==='dashboard'||QS.get('d')){ openDash(qd); }
+else if(qv==='fleet'){ route={view:'fleet'}; renderFleet(); }
+else if(qv==='automations'){ route={view:'automations'}; renderAutomations(); }
 else if(openM && byId(openM)){ route={view:'detail',id:openM}; renderDetail(); }
 else { renderOverview(); }
 if(!RM){ setInterval(()=>{ tickModel(); updateLive(); }, 2000); }
