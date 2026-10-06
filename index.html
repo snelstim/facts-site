@@ -667,7 +667,7 @@
   // Contact form. Set FORM.endpoint to a form service URL (Formspree, Web3Forms, ...) and the
   // submission is emailed to you. Left empty, the form opens the visitor's email app instead.
   (function(){
-    const FORM={ endpoint:'', accessKey:'', to:'tim.snels@gwbtools.co.nz' };
+    const FORM={ endpoint:'https://formspree.io/f/mvkzggrz', accessKey:'', to:'tim.snels@gwbtools.co.nz' };
     const f=document.getElementById('contact'); if(!f) return;
     const st=document.getElementById('fstatus'), btn=document.getElementById('fsend');
     const vals=n=>[...f.querySelectorAll('[name="'+n+'"]:checked')].map(i=>i.value).join(', ');
