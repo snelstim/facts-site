@@ -235,6 +235,43 @@
   .mail.small .mb{padding:13px 18px}
   .ill{font-family:"IBM Plex Mono",monospace;font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:var(--steel);
     margin:12px 2px 0}
+
+  /* contact form inside the CTA band */
+  .cta-band{text-align:left}
+  .cta-grid{max-width:var(--maxw);margin:0 auto;display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:start}
+  @media(max-width:900px){.cta-grid{grid-template-columns:1fr;gap:30px}}
+  .cta-band .lede{margin:16px 0 0}
+  .cta-list{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px;color:#c7d3e2;font-size:.95rem}
+  .cta-list li{padding-left:22px;position:relative}
+  .cta-list li::before{content:"";position:absolute;left:0;top:.55em;width:10px;height:2px;background:var(--blue-bright)}
+  .cta-alt{margin:26px 0 0;color:#8ea3bd;font-size:.9rem}
+  .cta-alt a{color:#dbe6f4;border-bottom:1px solid #35496a}
+  .formcard{background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:16px;padding:26px;
+    display:flex;flex-direction:column;gap:16px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  .formcard label{display:flex;flex-direction:column;gap:6px;font-size:.84rem;font-weight:500;color:var(--ink-2)}
+  .formcard .opt{font-weight:400;color:var(--steel);font-size:.76rem;font-style:normal}
+  .formcard input:not([type=checkbox]),.formcard select,.formcard textarea{font:inherit;font-size:.95rem;color:var(--ink);
+    background:var(--mist);border:1px solid var(--line);border-radius:8px;padding:10px 12px;width:100%}
+  .formcard textarea{resize:vertical}
+  .formcard input:focus-visible,.formcard select:focus-visible,.formcard textarea:focus-visible,
+  .chips input:focus-visible+span{outline:2px solid var(--blue);outline-offset:2px}
+  .formcard input.bad,.formcard select.bad{border-color:#c94b4b}
+  .f-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.f-row{grid-template-columns:1fr}}
+  .formcard fieldset{border:0;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+  .formcard legend{font-size:.84rem;font-weight:600;color:var(--ink);padding:0;margin-bottom:8px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips label{flex-direction:row;font-weight:500}
+  .chips input{position:absolute;opacity:0;pointer-events:none}
+  .chips span{display:inline-block;padding:7px 13px;border:1px solid var(--line);border-radius:20px;background:var(--mist);
+    cursor:pointer;font-size:.86rem;color:var(--ink-2);user-select:none}
+  .chips input:checked+span{background:var(--blue);border-color:var(--blue);color:#fff}
+  .f-hint{margin:6px 0 0;color:var(--steel);font-size:.78rem}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  .formcard .btn-primary{align-self:flex-start;padding:12px 28px}
+  .formcard .btn-primary[disabled]{opacity:.6;cursor:wait}
+  .f-status{margin:0;font-size:.9rem;min-height:1.2em}
+  .f-status.ok{color:var(--good)}.f-status.err{color:#c94b4b}
 </style>
 
 <!-- ===================== HERO ===================== -->
@@ -515,13 +552,85 @@
 
 <!-- ===================== CTA ===================== -->
 <section class="cta-band" id="demo">
-  <span class="eyebrow" style="color:var(--blue-bright)">See it on your floor</span>
-  <h2>Put the FACTS on the wall.</h2>
-  <p class="lede">Book a demonstration and watch live OEE from a real machine on your floor — set up in minutes,
-    no config files, no cloud.</p>
-  <div class="btns">
-    <a href="mailto:tim.snels@gwbtools.co.nz?subject=FACTS%20demo" class="btn-primary">Book a demo</a>
-    <a href="https://gwbtools.co.nz" class="btn-ghost">gwbtools.co.nz</a>
+  <div class="cta-grid">
+    <div class="cta-copy">
+      <span class="eyebrow" style="color:var(--blue-bright)">See it on your floor</span>
+      <h2>Put the FACTS on the wall.</h2>
+      <p class="lede">Tell us about your machines and we'll show you live OEE from machines like yours &mdash; set up in minutes,
+        no config files, no cloud.</p>
+      <ul class="cta-list">
+        <li>Which makes, models and connections you have helps us prepare a demo that fits.</li>
+        <li>Missing a connection or machine type? Tell us. It shapes what we build next.</li>
+        <li>We use your details only to reply to you.</li>
+      </ul>
+      <p class="cta-alt">Prefer email? <a href="mailto:tim.snels@gwbtools.co.nz?subject=FACTS%20demo">tim.snels@gwbtools.co.nz</a>
+        &middot; <a href="https://gwbtools.co.nz">gwbtools.co.nz</a></p>
+    </div>
+
+    <form class="formcard" id="contact" novalidate>
+      <div class="f-row">
+        <label>Your name<input name="name" required autocomplete="name"></label>
+        <label>Company<input name="company" required autocomplete="organization"></label>
+      </div>
+      <div class="f-row">
+        <label>Email<input name="email" type="email" required autocomplete="email"></label>
+        <label><span>Phone <i class="opt">optional</i></span><input name="phone" type="tel" autocomplete="tel"></label>
+      </div>
+      <div class="f-row">
+        <label>Country
+          <select name="country"><option>New Zealand</option><option>Australia</option><option>Other</option></select></label>
+        <label>I'd like to
+          <select name="intent"><option>See a demo</option><option>Talk about my machines</option><option>Get pricing</option><option>Just ask a question</option></select></label>
+      </div>
+
+      <fieldset><legend>Machine types</legend>
+        <div class="chips">
+          <label><input type="checkbox" name="types" value="Pressbrakes"><span>Pressbrakes</span></label>
+          <label><input type="checkbox" name="types" value="Lasers"><span>Lasers</span></label>
+          <label><input type="checkbox" name="types" value="Punching machines"><span>Punching</span></label>
+          <label><input type="checkbox" name="types" value="Machining centres"><span>Machining</span></label>
+          <label><input type="checkbox" name="types" value="Utilities (nitrogen, compressors)"><span>Utilities</span></label>
+          <label><input type="checkbox" name="types" value="Other"><span>Other</span></label>
+        </div></fieldset>
+
+      <fieldset><legend>How do your machines connect?</legend>
+        <div class="chips">
+          <label><input type="checkbox" name="conn" value="OPC-UA"><span>OPC-UA</span></label>
+          <label><input type="checkbox" name="conn" value="MTConnect"><span>MTConnect</span></label>
+          <label><input type="checkbox" name="conn" value="Web dashboard (Socket.IO)"><span>Web dashboard</span></label>
+          <label><input type="checkbox" name="conn" value="Not sure"><span>Not sure</span></label>
+        </div>
+        <p class="f-hint">Need something else? Tick what you'd use and we'll note it as a request.</p>
+        <div class="chips">
+          <label><input type="checkbox" name="connreq" value="Modbus TCP"><span>Modbus TCP</span></label>
+          <label><input type="checkbox" name="connreq" value="Siemens S7"><span>Siemens S7</span></label>
+          <label><input type="checkbox" name="connreq" value="EtherNet/IP"><span>EtherNet/IP</span></label>
+          <label><input type="checkbox" name="connreq" value="Fanuc FOCAS"><span>Fanuc</span></label>
+          <label><input type="checkbox" name="connreq" value="Other"><span>Other</span></label>
+        </div></fieldset>
+
+      <label><span>Makes and models <i class="opt">optional</i></span>
+        <textarea name="machines" rows="2" placeholder="e.g. LVD Dyna-Press, Mazak HCN, a nitrogen generator"></textarea></label>
+      <div class="f-row">
+        <label>Machines
+          <select name="count"><option>1&ndash;5</option><option>6&ndash;20</option><option>More than 20</option></select></label>
+        <label>Sites
+          <select name="sites"><option>1</option><option>2&ndash;5</option><option>More than 5</option></select></label>
+      </div>
+
+      <fieldset><legend>Interested in</legend>
+        <div class="chips">
+          <label><input type="checkbox" name="interest" value="Several sites in one view"><span>Several sites</span></label>
+          <label><input type="checkbox" name="interest" value="Email automations"><span>Email automations</span></label>
+          <label><input type="checkbox" name="interest" value="AI assistant"><span>AI assistant</span></label>
+          <label><input type="checkbox" name="interest" value="ERP integration"><span>ERP integration</span></label>
+        </div></fieldset>
+
+      <label><span>Anything else? <i class="opt">optional</i></span><textarea name="message" rows="3"></textarea></label>
+      <input type="text" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
+      <button type="submit" class="btn-primary" id="fsend">Send</button>
+      <p class="f-status" id="fstatus" role="status" aria-live="polite"></p>
+    </form>
   </div>
 </section>
 
@@ -551,5 +660,52 @@
         arcs.forEach(a=>{ a.style.strokeDashoffset = C*(1-(+a.dataset.pct)/100); });
       }));
     }
+  })();
+</script>
+
+<script>
+  // Contact form. Set FORM.endpoint to a form service URL (Formspree, Web3Forms, ...) and the
+  // submission is emailed to you. Left empty, the form opens the visitor's email app instead.
+  (function(){
+    const FORM={ endpoint:'', accessKey:'', to:'tim.snels@gwbtools.co.nz' };
+    const f=document.getElementById('contact'); if(!f) return;
+    const st=document.getElementById('fstatus'), btn=document.getElementById('fsend');
+    const vals=n=>[...f.querySelectorAll('[name="'+n+'"]:checked')].map(i=>i.value).join(', ');
+    function collect(){
+      const g=n=>(f.elements[n]&&f.elements[n].value||'').trim();
+      return {
+        name:g('name'), company:g('company'), email:g('email'), phone:g('phone'), country:g('country'),
+        intent:g('intent'), machine_types:vals('types'), connections:vals('conn'),
+        connections_requested:vals('connreq'), makes_and_models:g('machines'),
+        machine_count:g('count'), sites:g('sites'), interested_in:vals('interest'), message:g('message')
+      };
+    }
+    function say(t,c){ st.textContent=t; st.className='f-status '+(c||''); }
+    function valid(d){
+      let ok=true;
+      ['name','company','email'].forEach(n=>{ const el=f.elements[n]; const bad=!d[n]||(n==='email'&&!/^\S+@\S+\.\S+$/.test(d[n])); el.classList.toggle('bad',bad); if(bad) ok=false; });
+      return ok;
+    }
+    function mailto(d){
+      const lines=Object.entries(d).filter(([,v])=>v).map(([k,v])=>k.replace(/_/g,' ')+': '+v);
+      location.href='mailto:'+FORM.to+'?subject='+encodeURIComponent('FACTS enquiry - '+d.company)+'&body='+encodeURIComponent(lines.join('\n'));
+    }
+    f.addEventListener('submit',async e=>{
+      e.preventDefault();
+      if(f.elements.botcheck.value) return;            // honeypot: bots fill this in
+      const d=collect();
+      if(!valid(d)){ say('Please fill in your name, company and a valid email.','err'); return; }
+      if(!FORM.endpoint){ mailto(d); say('Opening your email app with the details filled in.','ok'); return; }
+      btn.disabled=true; say('Sending...');
+      try{
+        const body=Object.assign({subject:'FACTS enquiry - '+d.company, from_name:'FACTS website'},d);
+        if(FORM.accessKey) body.access_key=FORM.accessKey;
+        const r=await fetch(FORM.endpoint,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body)});
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        f.reset(); say('Thanks. We have your details and will reply by email.','ok');
+      }catch(err){
+        say('Sorry, that did not send. Please email '+FORM.to+' instead.','err');
+      }finally{ btn.disabled=false; }
+    });
   })();
 </script>
