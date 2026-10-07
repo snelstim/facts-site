@@ -196,23 +196,43 @@
   .trendw .ax{display:flex;flex-direction:column;justify-content:space-between;font-size:.56rem;color:var(--muted);padding:2px 0;text-align:right}
   .trendw svg{flex:1;min-width:0;height:100%}
 
-  /* dashboards hub */
-  .dgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-  .dcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
-  .dcard .th{height:120px;background:var(--surface-2);display:flex;align-items:center;justify-content:center}
-  .dcard .th img{max-width:84%;max-height:100%;object-fit:contain}
-  .dcard .db{padding:14px 16px;display:flex;flex-direction:column;gap:4px;flex:1}
-  .dcard .dn{font-family:Saira;font-weight:700;font-size:1.02rem;line-height:1.25}
-  .dcard .dm{color:var(--muted);font-size:.8rem}
-  .dcard .da{display:flex;gap:8px;margin-top:auto;padding-top:12px}
+  /* dashboards hub — the same cards as the app */
+  .dgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+  @media(max-width:1100px){.dgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:640px){.dgrid{grid-template-columns:1fr}}
+  .dcard2{background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;
+    display:flex;flex-direction:column;cursor:pointer;outline:none}
+  .dcard2:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .th2{position:relative;height:112px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;gap:6px;padding:8px;color:var(--muted)}
+  .th2 img{flex:1 1 0;min-width:0;height:100%;object-fit:contain}
+  .th2 svg{width:38px;height:38px;fill:currentColor}
+  .th2 .more{position:absolute;right:8px;bottom:6px;font-size:.72rem;padding:1px 7px;border-radius:10px;background:var(--surface);color:var(--muted)}
+  .bd2{display:flex;flex-direction:column;gap:6px;padding:12px 14px 8px;flex:1}
+  .dn2{font-family:Saira;font-weight:700;font-size:1.05rem;line-height:1.3;min-height:2.6em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .ch2{display:flex;align-items:center;flex-wrap:wrap;gap:4px}
+  .chip2{font-size:.76rem;padding:2px 10px;border-radius:14px;background:var(--surface-2);color:var(--ink-2)}
+  .cap2{font-size:.76rem;color:var(--muted);margin-left:4px}
+  .act2{display:flex;justify-content:flex-end;margin-top:auto;min-height:34px}
+  .ib{width:34px;height:34px;border:0;background:transparent;border-radius:50%;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+  .ib:hover{background:var(--surface-2);color:var(--ink)}
+  .ib svg{width:20px;height:20px;fill:currentColor}
+  .menu{position:relative}
+  .menu .mlist{position:absolute;right:0;top:calc(100% + 4px);background:var(--surface);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);min-width:190px;padding:6px;z-index:30;display:none}
+  .menu.open .mlist{display:block}
+  .menu .mlist button{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--ink);padding:9px 12px;border-radius:6px;font:inherit;font-size:.9rem;cursor:pointer}
+  .menu .mlist button:hover{background:var(--surface-2)}
   .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);
     border-radius:8px;padding:7px 14px;font-family:Saira;font-weight:600;font-size:.86rem;cursor:pointer}
   .btn:hover{border-color:var(--accent)}
   .btn.pri{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+  .btn.outl{background:transparent;color:var(--accent);border-color:var(--accent)}
   .btn[disabled]{opacity:.5;cursor:not-allowed}
-  .sech{font-family:Saira;font-weight:700;font-size:1.15rem;margin:30px 0 12px}
-  .rotcard{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
-  .rotcard .rn{font-family:Saira;font-weight:700;font-size:1.02rem}.rotcard .rd{color:var(--muted);font-size:.82rem;flex:1;min-width:200px}
+  .sech{font-family:Saira;font-weight:700;font-size:1.15rem;margin:0}
+  .rothead{display:flex;align-items:center;margin:30px 0 8px}
+  .rrow{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:8px;cursor:pointer}
+  .rrow:hover{background:var(--surface-2)}
+  .rrow>svg{width:22px;height:22px;fill:var(--muted)}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:8px;font-size:.88rem;box-shadow:var(--shadow);z-index:90}
 
   /* fleet */
   .tabs{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
@@ -558,16 +578,19 @@ const DASHES=[
   {id:'strippit',m:'strippit',tpl:'glance',name:'Strippit PX-1530 — OEE at a glance'},
   {id:'hcn',m:'hcn',tpl:'glance',name:'HCN-5000 — OEE at a glance'},
   {id:'nitro',m:'nitro',tpl:'utility',name:'NitroCube N2 plant — Utility — process & uptime'},
+  {id:'plant',m:'ppeb',tpl:'plant',scoped:false,name:'Shop floor — OEE by machine'},
 ];
 const dashById=id=>DASHES.find(d=>d.id===id);
 // the app's own default layouts (Core/DashboardTemplates.cs): x, y, w, h on a 12-column grid
-const G=(t,x,y,w,h,title,metric)=>({t,x,y,w,h,title,metric});
+const G=(t,x,y,w,h,title,metric,m)=>({t,x,y,w,h,title,metric,m});
 const LAYOUTS={
   pressbrake:[G('gauge',0,0,3,3,'OEE','oee'),G('gauge',3,0,3,3,'Availability','availability'),G('gauge',6,0,3,3,'Performance','performance'),G('gauge',9,0,3,3,'Quality','quality'),
     G('text',0,3,4,2,'Active part'),G('prod',4,3,8,2,'Production'),G('state',0,5,12,2,'State'),G('faults',0,7,5,3,'Faults'),G('heat',5,7,7,3,'Status by hour')],
   laser:[G('gauge',0,0,3,3,'OEE','oee'),G('gauge',3,0,3,3,'Availability','availability'),G('gauge',6,0,3,3,'Performance','performance'),G('device',9,0,3,3,'Device status'),
     G('text',0,3,4,2,'Nesting'),G('prod',4,3,8,2,'Production'),G('state',0,5,12,2,'State'),G('faults',0,7,5,3,'Faults'),G('heat',5,7,7,3,'Status by hour')],
   glance:[G('gauge',0,0,3,3,'OEE','oee'),G('gauge',3,0,3,3,'Availability','availability'),G('gauge',6,0,3,3,'Performance','performance'),G('gauge',9,0,3,3,'Quality','quality'),G('state',0,3,12,2,'State')],
+  plant:[G('gauge',0,0,3,3,'PPEB 220/30','oee','ppeb'),G('gauge',3,0,3,3,'Puma 6kW','oee','puma'),G('gauge',6,0,3,3,'Strippit PX-1530','oee','strippit'),G('gauge',9,0,3,3,'HCN-5000','oee','hcn'),
+    G('state',0,3,6,2,'PPEB 220/30',null,'ppeb'),G('state',6,3,6,2,'Puma 6kW',null,'puma')],
   utility:[G('kpi',0,0,3,3,'Uptime','uptime'),G('kpi',3,0,3,3,'O2 purity','purity'),G('kpi',6,0,3,3,'Pressure','pressure'),G('device',9,0,3,3,'Device status'),
     G('trend',0,3,12,3,'Process trend'),G('state',0,6,12,2,'State')],
 };
@@ -626,32 +649,55 @@ function widgetInner(w,m){
 }
 const LIVE_TYPES=new Set(['gauge','prod','state','device','kpi','trend','text']);
 function board(d){
-  const m=byId(d.m), L=LAYOUTS[d.tpl];
+  const L=LAYOUTS[d.tpl];
   return `<div class="wboard" style="--rows:${rowsOf(L)}">`+L.map((w,i)=>
-    `<div class="wc" data-w="${i}" style="--x:${w.x+1};--w:${w.w};--y:${w.y+1};--h:${w.h}"><div class="wt">${w.title}</div><div class="wbody" style="${['gauge','device','kpi','text'].includes(w.t)?'flex-direction:column':''}">${widgetInner(w,m)}</div></div>`).join('')+`</div>`;
+    `<div class="wc" data-w="${i}" style="--x:${w.x+1};--w:${w.w};--y:${w.y+1};--h:${w.h}"><div class="wt">${w.title}</div><div class="wbody" style="${['gauge','device','kpi','text'].includes(w.t)?'flex-direction:column':''}">${widgetInner(w,byId(w.m||d.m))}</div></div>`).join('')+`</div>`;
 }
 
 /* ---------- views: dashboards hub, a dashboard, kiosk + rotation ---------- */
 let kiosk=false, curDash='ppeb', rot=null;
 const ROT_SECS=15;
 function openDash(id){ curDash=id; route={view:'dash',id}; renderDash(); }
+const ICON={
+  tv:'<svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h5v2h8v-2h5c1.1 0 1.99-.9 1.99-2L23 5c0-1.1-.9-2-2-2zm0 14H3V5h18v12z"/></svg>',
+  dl:'<svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>',
+  del:'<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>',
+  dash:'<svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>',
+  show:'<svg viewBox="0 0 24 24"><path d="M10 8v8l5-4-5-4zm9-5H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>',
+  full:'<svg viewBox="0 0 24 24"><path d="M21 11V3h-8l3.29 3.29-10 10L3 13v8h8l-3.29-3.29 10-10z"/></svg>',
+  link:'<svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>',
+};
+function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),2600); }
+const DEMO_ONLY='Not available in the demo';
+// every machine a dashboard refers to, scope machine first (the app does the same from its widgets)
+function dashMachines(d){ const ids=[]; const add=id=>{ if(id&&!ids.includes(id)) ids.push(id); };
+  if(d.scoped!==false) add(d.m); LAYOUTS[d.tpl].forEach(w=>add(w.m)); return ids.map(byId).filter(Boolean); }
 function renderDashboards(){
-  const cards=DASHES.map(d=>{ const m=byId(d.m); const n=LAYOUTS[d.tpl].length;
-    return `<div class="dcard"><div class="th"><img src="${m.img}" alt=""></div><div class="db"><div class="dn">${d.name}</div>
-      <div class="dm">${n} widgets · scoped to ${m.name}</div>
-      <div class="da"><button class="btn pri" data-open="${d.id}">Open</button><button class="btn" data-kiosk="${d.id}">Kiosk</button></div></div></div>`; }).join('');
-  view.innerHTML=`<div class="head"><h1 class="saira">Dashboards</h1><span class="cap">One board per machine, built from templates and editable in the app</span>
-      <span class="badge">Demo · simulated data</span><span class="spacer"></span><button class="btn" disabled title="Create from a template, import, or build your own in the full app">＋ New dashboard</button></div>
+  const cards=DASHES.map(d=>{ const ms=dashMachines(d), shown=ms.slice(0,3), more=ms.length-shown.length;
+    const label=d.scoped===false?`${ms.length} machines`:byId(d.m).name, n=LAYOUTS[d.tpl].length;
+    const thumb=shown.length?shown.map(m=>`<img src="${m.img}" alt="${m.name}">`).join('')+(more>0?`<span class="more">+${more}</span>`:''):ICON.dash;
+    return `<div class="dcard2" tabindex="0" role="link" data-open="${d.id}"><div class="th2">${thumb}</div>
+      <div class="bd2"><div class="dn2">${d.name}</div>
+        <div class="ch2"><span class="chip2">${label}</span><span class="cap2">${n} widgets</span></div>
+        <div class="act2"><button class="ib" title="Kiosk link" data-kiosk="${d.id}">${ICON.tv}</button><button class="ib" title="Export" data-note="1">${ICON.dl}</button><button class="ib" title="Delete" data-note="1">${ICON.del}</button></div></div></div>`; }).join('');
+  view.innerHTML=`<div class="head"><h1 class="saira">Dashboards</h1><span class="badge">Demo · simulated data</span><span class="spacer"></span>
+      <div class="menu" id="newmenu"><button class="btn pri" id="newbtn">＋ New dashboard ▾</button><div class="mlist">
+        <button data-note="1">Blank dashboard</button><button data-note="1">From template</button><button data-note="1">Import…</button></div></div></div>
     <div class="dgrid">${cards}</div>
-    <div class="sech">Rotating kiosks</div>
-    <div class="rotcard"><div class="rn">Shop floor loop</div>
-      <div class="rd">${DASHES.length} dashboards · ${ROT_SECS} s each. Cycles on one wall display, with a title bar showing which dashboard is up.</div>
-      <button class="kioskbtn" id="rotgo">▣ Start rotating kiosk</button></div>`;
-  view.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openDash(b.dataset.open));
-  view.querySelectorAll('[data-kiosk]').forEach(b=>b.onclick=()=>enterKiosk(b.dataset.kiosk,false));
-  document.getElementById('rotgo').onclick=()=>enterKiosk(DASHES[0].id,true);
+    <div class="rothead"><h2 class="sech">Rotating kiosks</h2><span class="spacer"></span><button class="btn outl" data-note="1">Kiosk rotation</button></div>
+    <div class="rrow" id="rotrow">${ICON.show}<span>Shop floor loop</span><span class="chip2">${DASHES.length} screens · ${ROT_SECS} s</span><span class="spacer"></span>
+      <button class="ib" title="Launch" id="rotgo">${ICON.full}</button><button class="ib" title="Copy link" id="rotlink">${ICON.link}</button><button class="ib" title="Delete" data-note="1">${ICON.del}</button></div>`;
+  const open=el=>openDash(el.dataset.open);
+  view.querySelectorAll('.dcard2').forEach(c=>{ c.onclick=()=>open(c); c.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(c);} }; });
+  view.querySelectorAll('[data-kiosk]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); enterKiosk(b.dataset.kiosk,false); });
+  view.querySelectorAll('[data-note]').forEach(b=>b.onclick=e=>{ e.stopPropagation(); document.getElementById('newmenu').classList.remove('open'); toast(b.closest('.menu')?'Create and edit dashboards in the full app':DEMO_ONLY); });
+  document.getElementById('newbtn').onclick=e=>{ e.stopPropagation(); document.getElementById('newmenu').classList.toggle('open'); };
+  document.getElementById('rotgo').onclick=e=>{ e.stopPropagation(); enterKiosk(DASHES[0].id,true); };
+  document.getElementById('rotrow').onclick=()=>enterKiosk(DASHES[0].id,true);
+  document.getElementById('rotlink').onclick=e=>{ e.stopPropagation(); const u=location.origin+location.pathname+'?kiosk=1&rotation=1'; (navigator.clipboard?navigator.clipboard.writeText(u):Promise.reject()).then(()=>toast('Link copied'),()=>toast(u)); };
   setActiveNav('dashboards');
 }
+document.addEventListener('click',()=>{ const m=document.getElementById('newmenu'); if(m) m.classList.remove('open'); });
 function renderDash(){
   const d=dashById(curDash), m=byId(d.m);
   const head=kiosk?'':`<div class="back" id="dback"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg> Dashboards</div>
@@ -845,8 +891,8 @@ function updateLive(){
     const chip=view.querySelector('.head .state'); if(chip){chip.style.background=STATE[m.state].c;chip.textContent=STATE[m.state].label;}
     const pv=view.querySelector('[data-r="pv"]'); if(pv&&m.kind==='utility') pv.innerHTML=m.process.map(p=>`<div class="b"><div class="v">${fmt(p.v)} <span style="font-size:.6em;color:var(--muted)">${p.u}</span></div><div class="l">${p.l}</div></div>`).join('');
   } else if(route.view==='dash'){
-    const d=dashById(curDash), m=byId(d.m), L=LAYOUTS[d.tpl];
-    L.forEach((w,i)=>{ if(!LIVE_TYPES.has(w.t)) return; const el=view.querySelector(`.wc[data-w="${i}"] .wbody`); if(el) el.innerHTML=widgetInner(w,m); });
+    const d=dashById(curDash), L=LAYOUTS[d.tpl];
+    L.forEach((w,i)=>{ if(!LIVE_TYPES.has(w.t)) return; const el=view.querySelector(`.wc[data-w="${i}"] .wbody`); if(el) el.innerHTML=widgetInner(w,byId(w.m||d.m)); });
   }
   tickClocks();
 }
