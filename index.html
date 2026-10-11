@@ -349,7 +349,7 @@
   <div class="in">
     <span class="lab">Speaks your machines' language</span>
     <span class="sep"></span>
-    <span class="chip">OPC-UA</span><span class="chip">MTConnect</span><span class="chip">Socket.IO</span>
+    <span class="chip">OPC-UA</span><span class="chip">MTConnect</span><span class="chip">Socket.IO</span><span class="chip">MQTT</span>
     <span class="sep"></span>
     <span class="lab">Pressbrake · Laser · Punching · Machining · Utility</span>
   </div>
@@ -368,7 +368,7 @@
       <div class="stat"><div class="n">A×P×Q</div><div class="t">True OEE, live</div>
         <div class="d">Availability × Performance × Quality, integrated from real state transitions — not a daily average.</div></div>
       <div class="stat"><div class="n">0</div><div class="t">Config files</div>
-        <div class="d">Add a machine by browsing its address space and clicking the signals. A form, not a <code>.conf</code>.</div></div>
+        <div class="d">Add a machine by browsing its address space or topics and clicking the signals. A form, not a <code>.conf</code>.</div></div>
       <div class="stat"><div class="n">1</div><div class="t">Self-contained app</div>
         <div class="d">One app owns config, polling, storage and the dashboard. No Grafana, no Docker, no second database.</div></div>
     </div>
@@ -387,7 +387,7 @@
         <h3>Connect</h3>
         <p>Point FACTS at a machine's endpoint and browse its live address space in the app. Auto-detected profiles
           map the OEE signals for you — confirm and save.</p>
-        <span class="tag">In-app OPC-UA / MTConnect browser</span></div>
+        <span class="tag">In-app OPC-UA / MTConnect / MQTT browser</span></div>
       <div class="step"><span class="num"></span>
         <h3>Measure</h3>
         <p>FACTS records on change, computes A×P×Q per machine, and keeps the history on-site — with downsampling so a
@@ -411,7 +411,7 @@
   <div class="wrap">
     <div class="feats">
       <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg></span>
-        <h4>Address-space browser</h4><p>Add machines by clicking nodes — no vendor tools, no config files, no guessing tag names.</p></div>
+        <h4>Address-space browser</h4><p>Add machines by clicking nodes or MQTT topics — no vendor tools, no config files, no guessing tag names.</p></div>
       <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg></span>
         <h4>Machine profiles</h4><p>Map any machine once, reuse it for every identical install — whatever the make.</p></div>
       <div class="feat"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 19V5M20 19H4M8 15l4-5 3 3 4-6"/></svg></span>
@@ -596,6 +596,7 @@
         <div class="chips">
           <label><input type="checkbox" name="conn" value="OPC-UA"><span>OPC-UA</span></label>
           <label><input type="checkbox" name="conn" value="MTConnect"><span>MTConnect</span></label>
+          <label><input type="checkbox" name="conn" value="MQTT"><span>MQTT</span></label>
           <label><input type="checkbox" name="conn" value="Web dashboard (Socket.IO)"><span>Web dashboard</span></label>
           <label><input type="checkbox" name="conn" value="Not sure"><span>Not sure</span></label>
         </div>
