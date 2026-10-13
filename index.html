@@ -226,7 +226,7 @@
   .mail .hl{border-left:4px solid #c62828;padding:5px 12px;margin-bottom:12px;font-size:1rem}
   .mail .hl.ok{border-color:#2e7d32}
   .mail table{border-collapse:collapse}
-  .mail td{padding:2px 14px 2px 0}.mail td:first-child{color:#666}
+  .mail td{padding:2px 14px 2px 0;color:#222}.mail td:first-child{color:#666}
   .mail p.t{margin:13px 0 4px}
   .mail ul{margin:0;padding-left:18px}
   .mail a{color:#0076c0}
@@ -444,13 +444,13 @@
     <div class="auto-grid">
       <div>
         <div class="rule" aria-label="Example automation (illustrative)">
-          <div class="rh"><b>Booster stopped at full tank</b><span class="on"><i></i>On</span></div>
+          <div class="rh"><b>Stopped during production hours</b><span class="on"><i></i>On</span></div>
           <div class="rr"><span class="rk">When</span><span class="rv">
-            <span>NitroCube &middot; Booster status = Stopped</span>
-            <span class="sub">One email when the booster stops, not one every minute it stays stopped</span></span></div>
+            <span>Press Brake 2 &middot; Machine state = Down</span>
+            <span class="sub">One email when the machine goes down, not one every minute it stays down</span></span></div>
           <div class="rr"><span class="rk">Only if</span><span class="rv">
-            <span>NitroCube &middot; HP tank pressure &ge; 100 bar</span>
-            <span><span class="no">NOT</span>Sun 00:00&ndash;08:00</span></span></div>
+            <span>Press Brake 2 &middot; Parts completed &ge; 1</span>
+            <span>Mon, Tue, Wed, Thu, Fri 06:00&ndash;18:00</span></span></div>
           <div class="rr"><span class="rk">Then</span><span class="rv">
             <span>Email service@yourcompany.com</span>
             <span class="sub">At most every 30 min &middot; send a follow-up when things are back to normal</span></span></div>
@@ -465,27 +465,27 @@
       </div>
       <div>
         <div class="mail" aria-label="Example alert email (illustrative)">
-          <div class="mh">To: service@yourcompany.com<span class="sj">[FACTS] Auckland - NitroCube: Booster stopped at full tank</span></div>
+          <div class="mh">To: service@yourcompany.com<span class="sj">[FACTS] Auckland - Press Brake 2: Stopped during production hours</span></div>
           <div class="mb">
-            <div class="hl"><b>Triggered: NitroCube &middot; Booster status = Stopped</b></div>
+            <div class="hl"><b>Triggered: Press Brake 2 &middot; Machine state = Down</b></div>
             <table>
-              <tr><td>Rule</td><td>Booster stopped at full tank</td></tr>
-              <tr><td>Time</td><td>Sat 03 Oct 2026 14:12:08</td></tr>
+              <tr><td>Rule</td><td>Stopped during production hours</td></tr>
+              <tr><td>Time</td><td>Tue 06 Oct 2026 14:12:08</td></tr>
               <tr><td>Site</td><td>Auckland</td></tr>
             </table>
             <p class="t"><b>Current values</b></p>
             <table>
-              <tr><td>NitroCube &middot; Booster status</td><td>Stopped</td></tr>
-              <tr><td>NitroCube &middot; HP tank pressure</td><td>118 bar</td></tr>
+              <tr><td>Press Brake 2 &middot; Machine state</td><td>Down</td></tr>
+              <tr><td>Press Brake 2 &middot; Parts completed</td><td>37</td></tr>
             </table>
             <p class="t"><b>Conditions (all met)</b></p>
-            <ul><li>NitroCube &middot; HP tank pressure &ge; 100 bar</li><li>NOT Sun 00:00&ndash;08:00</li></ul>
-            <p class="t"><a href="#automations" onclick="return false">Open NitroCube in FACTS</a></p>
+            <ul><li>Press Brake 2 &middot; Parts completed &ge; 1</li><li>Mon, Tue, Wed, Thu, Fri 06:00&ndash;18:00</li></ul>
+            <p class="t"><a href="#automations" onclick="return false">Open Press Brake 2 in FACTS</a></p>
             <div class="ft">Sent by FACTS. Change or switch off this alert under Automations.</div>
           </div>
         </div>
         <div class="mail small">
-          <div class="mh">To: service@yourcompany.com<span class="sj">[FACTS] [Resolved] Auckland - NitroCube: Booster stopped at full tank</span></div>
+          <div class="mh">To: service@yourcompany.com<span class="sj">[FACTS] [Resolved] Auckland - Press Brake 2: Stopped during production hours</span></div>
           <div class="mb"><div class="hl ok" style="margin-bottom:0"><b>Resolved after 23 min.</b></div></div>
         </div>
         <p class="ill">Illustrative emails</p>
