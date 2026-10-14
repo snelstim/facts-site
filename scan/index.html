@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download FACTS Scan</title>
+<meta name="description" content="FACTS Scan: a free, read-only program that finds the machines FACTS can connect to on your network. Download for Windows or Mac.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiB2aWV3Qm94PSIwIDAgNTEyIDUxMiI+CjxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTEyIiByeT0iMTEyIiBmaWxsPSIjMDA3NkMwIi8+CjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE0MC44NywzODkuMTIpIHNjYWxlKDAuMzg3MCwtMC4zODcwKSI+PHBhdGggZD0iTTYxIDBWNjg4SDUzNFY1MzdIMjY2VjM5Nkg0OTdWMjQ0SDI2NlYwWiIgZmlsbD0iI0ZGRkZGRiIvPjwvZz4KPC9zdmc+">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --ink:#12151C; --ink-2:#333b47; --steel:#5e5f62; --steel-2:#8a8f97;
+    --mist:#EEF2F6; --panel:#FFFFFF; --ground:#F3F6F9; --line:#DCE2EA;
+    --blue:#0076C0; --blue-2:#0a5da0; --blue-bright:#2E9BDD;
+    --good:#12A093; --warn:#F5901A;
+    --hero-1:#0b1a30; --hero-2:#0e1116; --hero-line:#243247;
+    --shadow:0 1px 2px rgba(18,21,28,.05),0 10px 30px rgba(18,21,28,.08);
+    --maxw:1000px;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ink:#EDF0F4; --ink-2:#C4CBD6; --steel:#9AA0A9; --steel-2:#6B7079;
+      --mist:#161A21; --panel:#141821; --ground:#0E1116; --line:#242B36;
+      --blue:#2E9BDD; --blue-2:#3AA6E6;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 34px rgba(0,0,0,.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#EDF0F4; --ink-2:#C4CBD6; --steel:#9AA0A9; --steel-2:#6B7079;
+    --mist:#161A21; --panel:#141821; --ground:#0E1116; --line:#242B36;
+    --blue:#2E9BDD; --blue-2:#3AA6E6;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 34px rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--blue)}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .wm{font-family:"Saira",sans-serif;font-weight:800;letter-spacing:-.03em;line-height:1;display:inline-flex;align-items:center}
+  .wm .t{color:var(--blue)}
+  .eyebrow{font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--blue-bright)}
+  h1,h2{font-family:"Saira",sans-serif;letter-spacing:-.01em;line-height:1.05;margin:0}
+  h1{font-weight:800;font-size:clamp(2.2rem,5vw,3.4rem);margin-top:14px;color:#fff}
+  h2{font-weight:700;font-size:1.5rem}
+  p{margin:0}
+
+  /* header */
+  .hero{background:radial-gradient(120% 100% at 80% 0%, #123a63 0%, var(--hero-1) 42%, var(--hero-2) 100%);color:#EDF0F4}
+  .hero nav{display:flex;align-items:center;gap:18px;padding:20px 0}
+  .hero nav a{text-decoration:none}
+  .hero .brand .wm{font-size:1.8rem;color:#fff}
+  .hero .links{margin-left:auto;display:flex;gap:22px;align-items:center}
+  .hero .links a{font-size:.92rem;color:#c7d3e2}
+  .hero .links a:hover{color:#fff}
+  .hero .links .cta{background:var(--blue);color:#fff;padding:9px 16px;border-radius:8px;font-weight:600;font-size:.9rem}
+  .hero .links .cta:hover{background:#0a5da0}
+  @media(max-width:600px){.hero .links a:not(.cta){display:none}}
+  .hero .intro{padding:34px 0 64px}
+  .hero .lede{color:#c7d3e2;font-size:1.12rem;max-width:56ch;margin-top:16px}
+  .hero .ver{margin-top:22px;font-family:"IBM Plex Mono",monospace;font-size:.8rem;letter-spacing:.04em;color:#8ea3bd;min-height:1.4em}
+
+  /* download cards */
+  main{padding:0 0 64px}
+  .dls{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:-34px;position:relative}
+  @media(max-width:760px){.dls{grid-template-columns:1fr}}
+  .dl{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:var(--shadow);
+    display:flex;flex-direction:column;gap:10px}
+  .dl h2{font-size:1.25rem}
+  .req{color:var(--steel);font-size:.88rem;line-height:1.45}
+  .btn{display:inline-block;align-self:flex-start;background:var(--blue);color:#fff;padding:13px 22px;border-radius:9px;
+    font-weight:600;font-family:"Saira",sans-serif;font-size:1rem;text-decoration:none;margin-top:6px}
+  .btn:hover{background:var(--blue-2)}
+  .file{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--steel)}
+  .sum{margin-top:6px;border-top:1px solid var(--line);padding-top:14px}
+  .sum .lab{font-family:"IBM Plex Mono",monospace;font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--steel)}
+  .sum code{display:block;margin-top:6px;font-family:"IBM Plex Mono",monospace;font-size:.78rem;line-height:1.5;
+    word-break:break-all;background:var(--mist);border:1px solid var(--line);border-radius:8px;padding:9px 11px;color:var(--ink)}
+  .copy{margin-top:8px;font:inherit;font-size:.82rem;font-weight:500;color:var(--blue);background:none;border:1px solid var(--line);
+    border-radius:7px;padding:5px 11px;cursor:pointer}
+  .copy:hover{border-color:var(--blue)}
+  .copy[hidden]{display:none}
+  .notice{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:var(--shadow);
+    margin-top:-34px;position:relative}
+
+  /* content */
+  section.blk{margin-top:44px}
+  section.blk p,section.blk li{color:var(--ink-2);font-size:.98rem}
+  section.blk p{margin-top:10px;max-width:68ch}
+  ol,ul.pts{margin:12px 0 0;padding-left:22px}
+  ol li,ul.pts li{margin:6px 0}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:6px}
+  @media(max-width:760px){.two{grid-template-columns:1fr}}
+  .fine{color:var(--steel);font-size:.86rem}
+
+  footer{background:var(--hero-2);color:#8ea3bd;padding:34px 24px;border-top:1px solid #1c2740}
+  footer .in{max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+    font-family:"IBM Plex Mono",monospace;font-size:.72rem;letter-spacing:.03em}
+  footer .wm{font-size:1.15rem;color:#fff}
+  footer .sp{margin-left:auto}
+  footer a{color:#8ea3bd}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <nav>
+      <a class="brand" href="../" aria-label="FACTS home"><span class="wm">FAC<span class="t">T</span><span class="t">S</span></span></a>
+      <span class="links">
+        <a href="../">Back to the main page</a>
+        <a href="../#demo" class="cta">Book a demo</a>
+      </span>
+    </nav>
+    <div class="intro">
+      <span class="eyebrow">Free tool &middot; FACTS Scan</span>
+      <h1>Download FACTS Scan</h1>
+      <p class="lede">A small program you run on a PC on your plant network. It finds the machines FACTS can read, tells you what to do
+        for each one, and saves a report you can send us. It only looks: it never changes or controls anything.</p>
+      <p class="ver" id="ver" aria-live="polite">&nbsp;</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="dls" id="dls">
+      <div class="dl" id="card-win">
+        <h2>Windows</h2>
+        <span class="req">Windows 10 (version 1607 or later) or Windows 11, 64-bit</span>
+        <a class="btn" id="btn-win" href="https://github.com/snelstim/facts-scan-downloads/releases/latest/download/FactsScan-win-x64.zip">Download for Windows</a>
+        <span class="file" id="meta-win">FactsScan-win-x64.zip</span>
+        <div class="sum">
+          <span class="lab">SHA-256</span>
+          <code id="sum-win">Loading&hellip;</code>
+          <button class="copy" type="button" data-for="sum-win" hidden>Copy checksum</button>
+        </div>
+      </div>
+      <div class="dl" id="card-mac">
+        <h2>Mac</h2>
+        <span class="req">Mac with Apple silicon (late 2020 or newer), macOS 12 or later</span>
+        <a class="btn" id="btn-mac" href="https://github.com/snelstim/facts-scan-downloads/releases/latest/download/FactsScan-mac-arm64.zip">Download for Mac</a>
+        <span class="file" id="meta-mac">FactsScan-mac-arm64.zip</span>
+        <div class="sum">
+          <span class="lab">SHA-256</span>
+          <code id="sum-mac">Loading&hellip;</code>
+          <button class="copy" type="button" data-for="sum-mac" hidden>Copy checksum</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="notice" id="gone" hidden>
+      <h2>FACTS Scan is not available to download yet</h2>
+      <p class="req" style="margin-top:8px">The first public version has not been released. <a href="../#demo">Contact us</a> and we will send it to you.</p>
+    </div>
+
+    <section class="blk">
+      <h2>Running it for the first time</h2>
+      <div class="two">
+        <div>
+          <span class="fine">Windows</span>
+          <ol>
+            <li>Unzip the download.</li>
+            <li>Open <b>FactsScan.exe</b>. No administrator rights are needed.</li>
+            <li>The program is new and not yet signed, so Windows SmartScreen may ask you to confirm. Choose
+              <b>More info</b>, then <b>Run anyway</b>.</li>
+          </ol>
+        </div>
+        <div>
+          <span class="fine">Mac</span>
+          <ol>
+            <li>Unzip the download.</li>
+            <li>Right-click <b>FACTS Scan</b>, choose <b>Open</b>, then <b>Open</b> again. This is needed once, because the
+              program is not from the App Store.</li>
+            <li>When macOS asks whether FACTS Scan may find devices on your local network, choose <b>Allow</b>. The scan cannot
+              work without it.</li>
+          </ol>
+        </div>
+      </div>
+      <p>Your browser then shows the scan window. Tick the networks to look at, start the scan, and save the report.</p>
+    </section>
+
+    <section class="blk">
+      <h2>What it does, and does not do</h2>
+      <ul class="pts">
+        <li>It only looks. It never changes, controls or writes to a machine.</li>
+        <li>It scans private address ranges only, and only the ones you tick.</li>
+        <li>Nothing is sent anywhere. The report is saved on your own computer.</li>
+        <li>It is gentle on the network, and you can stop it at any time.</li>
+        <li>A one-page note for your IT team is included in the download.</li>
+      </ul>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="in">
+    <span class="wm">FAC<span class="t">T</span><span class="t">S</span></span>
+    <span>Factory Analytics &amp; Cycle Tracking System</span>
+    <span class="sp"><a href="../">facts-oee.com</a> &middot; &copy; 2026 FACTS</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var REPO = 'snelstim/facts-scan-downloads';
+  var PREFIX = 'https://github.com/' + REPO + '/';
+  var FILES = [
+    { name: 'FactsScan-win-x64.zip', id: 'win' },
+    { name: 'FactsScan-mac-arm64.zip', id: 'mac' }
+  ];
+
+  function $(id) { return document.getElementById(id); }
+
+  function showFallback() {
+    // The static links and the checksums file keep working; only the live details are missing.
+    FILES.forEach(function (f) {
+      $('sum-' + f.id).textContent = 'The checksum could not be loaded right now.';
+    });
+    $('ver').textContent = '';
+  }
+
+  function mb(bytes) { return (bytes / 1048576).toFixed(0) + ' MB'; }
+
+  function apply(rel) {
+    var tag = String(rel.tag_name || '');
+    var m = /^scan-v(\d+\.\d+\.\d+)$/.exec(tag);
+    var when = rel.published_at ? new Date(rel.published_at) : null;
+    var line = m ? 'Version ' + m[1] : '';
+    if (when && !isNaN(when)) {
+      line += (line ? ' · ' : '') + 'released ' +
+        when.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+    $('ver').textContent = line;
+
+    var assets = {};
+    (rel.assets || []).forEach(function (a) { assets[a.name] = a; });
+
+    FILES.forEach(function (f) {
+      var a = assets[f.name];
+      if (!a) { $('sum-' + f.id).textContent = 'No checksum is listed for this file.'; return; }
+      if (typeof a.browser_download_url === 'string' && a.browser_download_url.indexOf(PREFIX) === 0) {
+        $('btn-' + f.id).href = a.browser_download_url;
+      }
+      $('meta-' + f.id).textContent = f.name + (a.size ? ' · ' + mb(a.size) : '');
+      var hex = /^sha256:([0-9a-f]{64})$/.exec(String(a.digest || ''));
+      if (hex) {
+        $('sum-' + f.id).textContent = hex[1];
+        document.querySelector('button[data-for="sum-' + f.id + '"]').hidden = false;
+      } else {
+        $('sum-' + f.id).textContent = 'No checksum is listed for this file.';
+      }
+    });
+  }
+
+  fetch('https://api.github.com/repos/' + REPO + '/releases/latest', { headers: { Accept: 'application/vnd.github+json' } })
+    .then(function (r) {
+      if (r.status === 404) { $('dls').hidden = true; $('gone').hidden = false; $('ver').textContent = ''; return null; }
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (rel) { if (rel) apply(rel); })
+    .catch(showFallback);
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest ? e.target.closest('button.copy') : null;
+    if (!b) return;
+    var text = $(b.getAttribute('data-for')).textContent;
+    function done(ok) {
+      var old = b.textContent;
+      b.textContent = ok ? 'Copied' : 'Select and copy it';
+      setTimeout(function () { b.textContent = old; }, 1800);
+    }
+    try {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+    } catch (err) { done(false); }
+  });
+})();
+</script>
+</body>
+</html>

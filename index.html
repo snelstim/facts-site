@@ -175,6 +175,15 @@
   .device .p{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.1em;color:#93a6c0;
     border:1px solid #2a374b;border-radius:6px;padding:5px 9px}
 
+  /* scan download */
+  .dl{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:26px;box-shadow:var(--shadow)}
+  .dl .dlr{display:flex;flex-direction:column;gap:6px;padding:16px 0;border-top:1px solid var(--line)}
+  .dl .dlr:first-child{border-top:none;padding-top:0}
+  .dl .dlr a.btn-primary{display:inline-block;align-self:flex-start;text-decoration:none}
+  .dl .req{color:var(--steel);font-size:.84rem;line-height:1.45}
+  .dl .fine{color:var(--steel);font-size:.8rem;line-height:1.5;margin:0}
+  .dl .fine a{color:var(--blue)}
+
   /* CTA */
   .cta-band{background:radial-gradient(120% 130% at 20% 0%, #123a63 0%, var(--hero-1) 45%, var(--hero-2) 100%);
     color:#EDF0F4;text-align:center;padding:84px 24px}
@@ -284,6 +293,7 @@
       <a href="#automations">Automations</a>
       <a href="#ai">AI assistant</a>
       <a href="#appliance">Deployment</a>
+      <a href="#scan">Find your machines</a>
       <a href="#demo" class="cta">Book a demo</a>
     </span>
   </nav>
@@ -544,6 +554,33 @@
         <div class="row">
           <span class="p">WINDOWS SERVICE</span><span class="p">NO CLOUD</span><span class="p">SQL FORWARDING</span>
           <span class="p">A/B UPDATES</span><span class="p">SIGNED PACKAGES</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FACTS SCAN ===================== -->
+<section class="band" id="scan">
+  <div class="wrap">
+    <div class="appl-grid">
+      <div>
+        <span class="eyebrow">Free tool &middot; FACTS Scan</span>
+        <h2>See what FACTS can connect to, before you buy.</h2>
+        <p class="lede">FACTS Scan is a small program you run on a PC on your plant network. It finds the machines FACTS can
+          read, tells you what to do for each one, and saves a report you can send us.</p>
+        <ul class="spec">
+          <li><span class="k">Read-only</span><span class="v">It only looks. It never changes, controls or writes to anything</span></li>
+          <li><span class="k">Your network</span><span class="v">Private address ranges only, and only the ones you tick</span></li>
+          <li><span class="k">Stays on your PC</span><span class="v">Nothing is sent anywhere. The report is saved on your computer</span></li>
+          <li><span class="k">No install</span><span class="v">Unzip and run. No administrator rights needed</span></li>
+          <li><span class="k">For IT</span><span class="v">A one-page note for your IT team is in the download</span></li>
+        </ul>
+      </div>
+      <div class="dl">
+        <div class="dlr">
+          <a class="btn-primary" href="scan/">Go to the download page</a>
+          <span class="req">For Windows (10 or 11, 64-bit) and Mac (Apple silicon). The page shows the checksum for each file so you can check your download.</span>
         </div>
       </div>
     </div>
